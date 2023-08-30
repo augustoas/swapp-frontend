@@ -1,0 +1,123 @@
+:root {
+  --background-color-main: #F6F8FB;
+  --navbar-icon-grey: #DBDDE0;
+  --navbar-icon-blue: #336CFB;
+  --button-blue: #336CFB;
+  --button-secondary: rgb(243, 247, 255);
+  --blue: #558EFF;
+  --grey: #a0a4a8;
+}
+
+body {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  p {
+    font-family: 'Lato', sans-serif !important;
+  }
+
+  h1 {
+    font-weight: bold;
+    font-size: 56px;
+    line-height: 60px;
+    letter-spacing: 0.4px;
+  }
+
+  h2 {
+    font-weight: bold;
+    font-size: 40px;
+    line-height: 46px;
+    letter-spacing: 0.2px;
+  }
+
+  h3 {
+    font-weight: 400;
+    font-size: 28px;
+    line-height: 34px;
+    letter-spacing: 0.2px;
+  }
+
+  h4 {
+    font-weight: bold;
+    font-size: 26px;
+    line-height: 34px;
+    letter-spacing: 0.2px;
+  }
+
+  h5 {
+    font-weight: bold;
+    font-size: 20px;
+    line-height: 26px;
+    letter-spacing: 0.2px;
+  }
+
+  h6 {
+    font-weight: 400;
+    font-size: 18px;
+    line-height: 24px;
+    letter-spacing: 0.1px;
+  }
+}
+
+#app {
+  background-color: var(--background-color-main);
+  text-align: center;
+  font-family: 'Lato', sans-serif;
+  color: #52575C;
+}
+
+.subtitle1 {
+  font-size: 16px;
+  font-weight: bold;
+  line-height: 24px;
+  letter-spacing: 0.1px;
+}
+
+.subtitle2 {
+  font-size: 14px;
+  font-weight: bold;
+  line-height: 20px;
+  letter-spacing: 0.1px;
+}
+
+.subtitle2--side-nav {
+  color: #52575C !important;
+}
+
+.small1 {
+  font-weight: 400;
+  font-size: 13px;
+  line-height: 16px;
+  letter-spacing: 0.1px;
+}
+
+.small2 {
+  font-weight: bold;
+  font-size: 12px;
+  line-height: 16px;
+  letter-spacing: 0.1px;
+}
+
+.small3 {
+  font-weight: bold;
+  font-size: 10px;
+  line-height: 12px;
+  letter-spacing: 0.2px;
+}
+
+.button {
+  font-weight: bold;
+  font-size: 15px;
+  line-height: 18px;
+  letter-spacing: 0.2px;
+}
+
+.initials {
+  font-weight: bold;
+  font-size: 13px;
+  line-height: 16px;
+  letter-spacing: 1px;
+}

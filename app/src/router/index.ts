@@ -10,12 +10,6 @@ const routes: Array<RouteConfig> = [
     name: "dashboard",
     component: Dashboard,
   },
-  {
-    path: "/appointments",
-    name: "appointments",
-    component: () =>
-      import(/* webpackChunkName: "about" */ "../views/AboutView.vue"),
-  },
 ];
 
 const router = new VueRouter({

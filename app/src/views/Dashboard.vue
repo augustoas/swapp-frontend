@@ -16,13 +16,15 @@
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
+import { namespace } from "vuex-class";
+
 import TopSection from "@/components/TopSection.vue";
 import HospitalSurveyChart from "@/components/Highcharts/HospitalSurveyChart.vue";
 import CurrentMonthChart from "@/components/Highcharts/CurrentMonthChart.vue";
 import CurrentWeekChart from "@/components/Highcharts/CurrentWeekChart.vue";
 import AppointmentsTable from "@/components/Tables/AppointmentsTable.vue";
 
-import * as Highcharts from "highcharts";
+const auth = namespace("auth");
 
 @Component({
   components: {
@@ -33,7 +35,10 @@ import * as Highcharts from "highcharts";
     AppointmentsTable,
   },
 })
-export default class Dashboard extends Vue {}
+export default class Dashboard extends Vue {
+  @auth.State("authenticated")
+  public authenticated!: boolean;
+}
 </script>
 
 <style lang="scss">

@@ -19,19 +19,20 @@ export default class BaseButton extends Vue {
   @Prop({ required: true }) readonly text!: string;
   @Prop({ default: "var(--button-blue)" }) readonly color!: string;
   @Prop({ default: "white" }) readonly textColor!: string;
-  @Prop({ default: "#0056b3" }) readonly hoverColor!: string;
+  @Prop({ default: "var(--mid-purple)" })
+  readonly hoverColor!: string;
   @Prop({ default: false }) readonly secondary!: boolean;
 
   getButtonColor() {
-    const color = this.secondary
-      ? "rgba(51, 108, 251, 0.15)"
-      : "var(--button-blue)";
-    const hoverColor = this.secondary ? "rgba(52, 108, 251, 0.21)" : "#0056b3";
+    const color = this.secondary ? "var(--grey)" : "var(--purple)";
+    const hoverColor = this.secondary
+      ? "var(--light-purple)"
+      : "var(--mid-purple)";
     return this.isHovered ? hoverColor : color;
   }
 
   getTextColor() {
-    const textColor = this.secondary ? "var(--button-blue)" : "white";
+    const textColor = this.secondary ? "var(--purple)" : "white";
     return textColor;
   }
 

@@ -1,5 +1,5 @@
-import AxiosApiAuth from '@/api/axiosApiAuth';
-import Auth from './Auth';
+import AxiosApiAuth from "@/api/axiosApiAuth";
+import Auth from "./Auth";
 
 export const AuthService = new Auth(new AxiosApiAuth());
 

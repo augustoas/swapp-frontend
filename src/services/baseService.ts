@@ -1,4 +1,4 @@
-import { ClientAPI } from '@/api/clients/client.d';
+import { ClientAPI } from "@/api/clients/client.d";
 
 export default class BaseService {
   protected api: ClientAPI;

@@ -1,6 +1,6 @@
-import BaseApi from '@/api/baseApi';
-import { ClientAPI } from '@/api/clients/client.d';
-import axiosClientAuth from '@/api/clients/axiosClientAuth';
+import BaseApi from "@/api/baseApi";
+import { ClientAPI } from "@/api/clients/client.d";
+import axiosClientAuth from "@/api/clients/axiosClientAuth";
 
 export default class AxiosApiAuth extends BaseApi implements ClientAPI {
   constructor(provider: ClientAPI = axiosClientAuth) {

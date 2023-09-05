@@ -1,7 +1,7 @@
 <template>
   <div>
     <!-- Desktop version -->
-    <div class="top-bar top-bar--desktop">
+    <div v-if="!isMobile" class="top-bar top-bar--desktop">
       <div class="top-bar__logo">
         <img src="@/assets/swapp-logo-brand.png" alt="Swapp" />
       </div>
@@ -27,7 +27,7 @@
         <BaseButton :text="'Become a Swapper'" :secondary="true" />
       </div>
     </div>
-    <div class="top-bar top-bar--mobile">
+    <div v-if="isMobile" class="top-bar top-bar--mobile">
       <div class="top-bar__logo">
         <img src="@/assets/swapp-logo-only.png" alt="Swapp" />
       </div>
@@ -36,7 +36,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop, Mixins } from "vue-property-decorator";
+import { Component, Mixins } from "vue-property-decorator";
 import { namespace } from "vuex-class";
 
 import ResponsiveMixin from "@/mixins/responsiveMixin";
@@ -128,19 +128,12 @@ export default class TopBar extends Mixins(ResponsiveMixin) {
   margin-right: 20px;
 }
 
-/* Mobile-specific styles */
-@media screen and (max-width: 920px) {
-  .top-bar--desktop {
-    display: none;
-  }
-
-  .top-bar--mobile {
-    height: 88px;
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    background-color: white;
-    display: block;
-  }
+.top-bar--mobile {
+  height: 88px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  background-color: white;
+  display: block;
 }
 </style>

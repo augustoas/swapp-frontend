@@ -14,5 +14,6 @@ export default class ResponsiveMixin extends Vue {
 
   checkIsMobile() {
     this.isMobile = window.innerWidth < 920;
+    console.log("isMobile", this.isMobile);
   }
 }

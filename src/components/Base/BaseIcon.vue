@@ -22,8 +22,6 @@ export default class BaseIcon extends Vue {
   getIconFilled() {
     return this.fill ? this.color : "var(--navbar-icon-grey)";
   }
-
-  public asd = this.getIconFilled();
 }
 </script>
 

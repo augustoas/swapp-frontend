@@ -27,9 +27,25 @@
         <BaseButton :text="'Become a Swapper'" :secondary="true" />
       </div>
     </div>
+    <!-- Mobile version -->
     <div v-if="isMobile" class="top-bar top-bar--mobile">
       <div class="top-bar__logo">
         <img src="@/assets/swapp-logo-only.png" alt="Swapp" />
+      </div>
+      <v-text-field
+        class="top-bar__search-input"
+        rounded
+        label=""
+        prepend-inner-icon="mdi-magnify"
+        solo
+        dense
+      ></v-text-field>
+      <div class="top-bar__right-col">
+        <BaseButton
+          class="top-bar__menu-item--mobile"
+          :text="'+'"
+          :isRounded="true"
+        />
       </div>
     </div>
   </div>
@@ -59,28 +75,42 @@ export default class TopBar extends Mixins(ResponsiveMixin) {
 <style lang="scss">
 /* Common styles for both versions */
 .top-bar {
-  height: 88px;
+  height: 80px;
   background-color: white;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-}
-
-.top-bar--mobile {
-  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 3;
 }
 
 .top-bar__logo img {
   width: auto;
-  height: 70px;
+  height: 50px;
   margin-left: 37px;
-  margin-top: 9px;
+  margin-top: 15px;
 }
 
 .top-bar__search-input {
-  margin: 24px 0px 24px 36px !important;
-  max-width: 350px !important;
-  color: blue; /* Replace with your color variable */
+  flex: 1; /* Make it take available space */
+  max-width: none !important; /* Override max-width */
+  margin: 20px 20px !important; /* Sides margin */
+  background-color: #fff !important;
+  border-radius: 20px !important; /* Rounded corners */
+  .v-input__icon--prepend-inner {
+    color: blue;
+  }
+  .v-label {
+    color: blue !important;
+  }
+  .v-input__control {
+    height: 40px;
+    display: flex;
+    align-items: center;
+  }
 }
 
 .top-bar__center-col {
@@ -128,12 +158,18 @@ export default class TopBar extends Mixins(ResponsiveMixin) {
   margin-right: 20px;
 }
 
+/* MOBILE */
+
 .top-bar--mobile {
-  height: 88px;
+  height: 80px;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   background-color: white;
-  display: block;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 3;
 }
 </style>

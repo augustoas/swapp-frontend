@@ -1,7 +1,6 @@
 <template>
   <div class="dashboard">
-    <TopSection />
-    <HospitalSurveyChart />
+    <!-- <HospitalSurveyChart />
     <div class="sm-highcharts-container">
       <v-col cols="12" md="6">
         <CurrentMonthChart />
@@ -10,7 +9,7 @@
         <CurrentWeekChart />
       </v-col>
     </div>
-    <AppointmentsTable />
+    <AppointmentsTable /> -->
   </div>
 </template>
 
@@ -43,6 +42,7 @@ export default class Dashboard extends Vue {
 
 <style lang="scss">
 .dashboard {
+  margin-top: 50px;
   padding: 36px;
 }
 

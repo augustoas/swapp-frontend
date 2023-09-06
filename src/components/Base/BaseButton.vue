@@ -1,7 +1,7 @@
 <template>
   <div class="button-container">
     <button
-      class="custom-button"
+      :class="{ 'custom-button': !isRounded, 'rounded-button': isRounded }"
       :style="{ backgroundColor: getButtonColor(), color: getTextColor() }"
       @mouseover="isHovered = true"
       @mouseleave="isHovered = false"
@@ -22,6 +22,7 @@ export default class BaseButton extends Vue {
   @Prop({ default: "var(--mid-purple)" })
   readonly hoverColor!: string;
   @Prop({ default: false }) readonly secondary!: boolean;
+  @Prop({ default: false }) readonly isRounded!: boolean;
 
   getButtonColor() {
     const color = this.secondary ? "var(--grey)" : "var(--purple)";
@@ -54,5 +55,19 @@ export default class BaseButton extends Vue {
   border-radius: 25px;
   cursor: pointer;
   transition: background-color 0.3s ease-in-out;
+}
+
+.rounded-button {
+  padding: 0; /* Padding set to 0 so width and height define the full size of the button */
+  border: none;
+  font-weight: bold;
+  border-radius: 50%; /* Makes it a circle */
+  cursor: pointer;
+  transition: background-color 0.3s ease-in-out;
+  height: 30px;
+  width: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center; /* To center the "+" text */
 }
 </style>

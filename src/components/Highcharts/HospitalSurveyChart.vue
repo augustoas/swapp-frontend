@@ -57,13 +57,16 @@ export default class HospitalSurveyChart extends Vue {
     {
       name: "Patients 2019",
       data: [140, 90, 250, 120, 200, 220, 150, 110, 80, 120, 180, 250],
-      color: "#336CFB",
+      color: "rgb(76, 14, 131)",
       marker: this.marker,
       fillColor: {
         linearGradient: [0, 0, 0, 200],
         stops: [
-          [0, Highcharts.color("#336CFB").setOpacity(0.3).get("rgba")],
-          [1, Highcharts.color("#336CFB").setOpacity(0.02).get("rgba")],
+          [0, Highcharts.color("rgb(76, 14, 131)").setOpacity(0.3).get("rgba")],
+          [
+            1,
+            Highcharts.color("rgb(76, 14, 131)").setOpacity(0.02).get("rgba"),
+          ],
         ],
       },
     },

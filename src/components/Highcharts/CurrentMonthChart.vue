@@ -38,7 +38,7 @@ export default class CurrentMonthChart extends Vue {
   ];
 
   public marker = {
-    fillColor: "#A9C1FD",
+    fillColor: "var(--dark-purple)",
     enabled: true,
     symbol: "circle",
     lineColor: "#FFFFFF",
@@ -50,7 +50,7 @@ export default class CurrentMonthChart extends Vue {
     {
       name: "Income in current month",
       data: [35000, 140000, 25000, 60000, 40000],
-      color: "#336CFB",
+      color: "var(--purple)",
       marker: this.marker,
     },
   ];
@@ -84,7 +84,7 @@ export default class CurrentMonthChart extends Vue {
         const legendBoxStyle =
           "backgroundColor: #FFFFFF; width: 64px; text-align: center;  ";
         const legendTextStyle =
-          "font-size: 12px; font-weight: 700; color: #336CFB;";
+          "font-size: 12px; font-weight: 700; color: black;";
 
         const tooltip = `
           <div style="${legendBoxStyle}">

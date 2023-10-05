@@ -14,6 +14,6 @@ export interface ClientAPI {
   get<T>(url: string, config?): Promise<ClientResponse<T>>;
   post<T>(url: string, data?, config?): Promise<ClientResponse<T>>;
   put<T>(url: string, data?, config?): Promise<ClientResponse<T>>;
-  patch<T>(url: string, config?): Promise<ClientResponse<T>>;
+  patch<T>(url: string, data?, config?): Promise<ClientResponse<T>>;
   delete<T>(url: string, config?): Promise<ClientResponse<T>>;
 }

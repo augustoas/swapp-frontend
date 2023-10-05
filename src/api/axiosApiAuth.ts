@@ -8,8 +8,8 @@ export default class AxiosApiAuth extends BaseApi implements ClientAPI {
     this.provider = provider;
   }
 
-  get<T>(url: string, params = {}) {
-    return this.provider.get<T>(url, params);
+  get<T>(url: string, config = {}) {
+    return this.provider.get<T>(url, config);
   }
 
   post<T>(url: string, data = {}, config = {}) {
@@ -20,8 +20,8 @@ export default class AxiosApiAuth extends BaseApi implements ClientAPI {
     return this.provider.put<T>(url, data, config);
   }
 
-  patch<T>(url: string, config = {}) {
-    return this.provider.patch<T>(url, config);
+  patch<T>(url: string, data = {}, config = {}) {
+    return this.provider.patch<T>(url, data, config);
   }
 
   delete<T>(url: string, config = {}) {

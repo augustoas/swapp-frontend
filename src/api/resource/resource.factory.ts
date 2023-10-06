@@ -2,7 +2,7 @@ import AxiosApi from '../axiosApiAuth';
 import { ClientResponse } from "@/api/clients/client.d";
 import { Resource } from '../../types/resource';
 
-export default abstract class ResourceFactory {
+export default abstract class ResourceFactory<T> {
   protected axiosApi = new AxiosApi();
   protected resource: Resource;
   protected url: string;
@@ -12,9 +12,9 @@ export default abstract class ResourceFactory {
     this.url = `/${this.resource}`;
   }
 
-  abstract create<T>(data: Object, config?: Object): Promise<ClientResponse<T>>;
-  abstract findOne<T>(id: number, config?: Object): Promise<ClientResponse<T>>;
-  abstract findAll<T>(config?: Object): Promise<ClientResponse<T[]>>;
-  abstract update<T>(id: number, data: Object, config?: Object): Promise<ClientResponse<T>>;
-  abstract delete<T>(id: number, config?: Object): Promise<ClientResponse<T>>;
+  abstract create(data: Object, config?: Object): Promise<ClientResponse<T>>;
+  abstract findOne(id: number, config?: Object): Promise<ClientResponse<T>>;
+  abstract findAll(config?: Object): Promise<ClientResponse<T[]>>;
+  abstract update(id: number, data: Object, config?: Object): Promise<ClientResponse<T>>;
+  abstract delete(id: number, config?: Object): Promise<ClientResponse<T>>;
 }

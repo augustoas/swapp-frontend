@@ -2,13 +2,13 @@ import ResourceFactory from "./resource.factory";
 import { Resource } from '../../types/resource';
 import { ClientResponse } from "@/api/clients/client.d";
 
-export default class GenericResource extends ResourceFactory {
+export default class GenericResource<T> extends ResourceFactory<T> {
   constructor(resource: Resource) {
     super(resource);
     this.resource = resource;
   }
 
-  async create<T>(data: Object, config?: Object): Promise<ClientResponse<T>> {
+  async create(data: Object, config?: Object): Promise<ClientResponse<T>> {
     try {
       // Handle the response here
       const response = await this.axiosApi.post(this.url, data, config)
@@ -21,7 +21,7 @@ export default class GenericResource extends ResourceFactory {
     }
   } 
 
-  async findOne<T>(id: number, config?: Object): Promise<ClientResponse<T>> {
+  async findOne(id: number, config?: Object): Promise<ClientResponse<T>> {
     try {
       // Handle the response here
       const response = await this.axiosApi.get(this.url + `/${id}`, config)
@@ -34,7 +34,7 @@ export default class GenericResource extends ResourceFactory {
     }
   }
 
-  async findAll<T>(config?: Object): Promise<ClientResponse<T[]>> {
+  async findAll(config?: Object): Promise<ClientResponse<T[]>> {
     try {
       // Handle the response here
       const response = await this.axiosApi.get(this.url, config)
@@ -47,7 +47,7 @@ export default class GenericResource extends ResourceFactory {
     }
   }
 
-  async update<T>(id: number, data: Object, config?: Object): Promise<ClientResponse<T>> {
+  async update(id: number, data: Object, config?: Object): Promise<ClientResponse<T>> {
     try {
       // Handle the response here
       const response = await this.axiosApi.patch(this.url + `/${id}`, data, config)
@@ -60,7 +60,7 @@ export default class GenericResource extends ResourceFactory {
     }
   }
 
-  async delete<T>(id: number, config?: Object): Promise<ClientResponse<T>> {
+  async delete(id: number, config?: Object): Promise<ClientResponse<T>> {
     try {
       // Handle the response here
       const response = await this.axiosApi.delete(this.url + `/${id}`, config)

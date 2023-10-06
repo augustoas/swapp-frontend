@@ -14,24 +14,24 @@ interface IDefaultAttributes {
   updatedDate: Date,
 }
 
-interface IReviews extends IDefaultAttributes {
+export interface IReviews extends IDefaultAttributes {
 
 }
-interface IReplies extends IDefaultAttributes {
+export interface IReplies extends IDefaultAttributes {
   
 }
-interface ICategories extends IDefaultAttributes {
+export interface ICategories extends IDefaultAttributes {
   
 }
-interface IJobCategories extends IDefaultAttributes {
+export interface IJobCategories extends IDefaultAttributes {
   
 }
-interface IJobs extends IDefaultAttributes {
+export interface IJobs extends IDefaultAttributes {
   
 }
-interface IUsers extends IDefaultAttributes {
+export interface IUsers extends IDefaultAttributes {
   
 }
-interface IAuth extends IDefaultAttributes {
+export interface IAuth extends IDefaultAttributes {
   
 }

@@ -9,7 +9,7 @@ export default abstract class ResourceFactory<T> {
 
   constructor(resource: Resource) {
     this.resource = resource;
-    this.url = `/${this.resource}`;
+    this.url = `/backend/${this.resource}`;
   }
 
   abstract create(data: Object, config?: Object): Promise<ClientResponse<T>>;

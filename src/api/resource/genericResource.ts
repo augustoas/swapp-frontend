@@ -2,7 +2,7 @@ import ResourceFactory from "./resource.factory";
 import { Resource } from '../../types/resource';
 import { ClientResponse } from "@/api/clients/client.d";
 
-export default class GenericResource<T> extends ResourceFactory<T> {
+export default class GenericResource<T> extends ResourceFactory {
   constructor(resource: Resource) {
     super(resource);
     this.resource = resource;
@@ -19,7 +19,7 @@ export default class GenericResource<T> extends ResourceFactory<T> {
       // Handle any errors here
       throw new Error(`${error}`);
     }
-  } 
+  }
 
   async findOne(id: number, config?: Object): Promise<ClientResponse<T>> {
     try {

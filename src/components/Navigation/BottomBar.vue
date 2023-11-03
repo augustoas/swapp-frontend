@@ -1,26 +1,38 @@
 <template>
   <div v-if="isMobile" class="bottom-tab-bar">
-    <router-link to="/home" class="tab-item" active-class="active">
-      <span class="tab-label">Home</span>
-    </router-link>
-    <router-link to="/search" class="tab-item" active-class="active">
-      <i class="fas fa-search tab-icon"></i>
-      <span class="tab-label">Search</span>
-    </router-link>
-    <router-link to="/profile" class="tab-item" active-class="active">
-      <i class="fas fa-user tab-icon"></i>
-      <span class="tab-label">Profile</span>
-    </router-link>
+    <div v-for="(item, index) in items" :key="item.name">
+      <div @click="selectItem(index)">
+        <router-link :to="item.path" class="tab-item">
+          <BaseIcon
+            :fill="getFilled(index)"
+            :icon="item.icon"
+            :width="25"
+            :height="25"
+            :viewBox="'0 0 25 25'"
+            :color="'var(--purple)'"
+          />
+          <span :class="{ 'tab-label': true, active: getFilled(index) }">
+            {{ item.name }}
+          </span>
+        </router-link>
+      </div>
+    </div>
   </div>
 </template>
 
 <script lang="ts">
+import { namespace } from "vuex-class";
+import { State } from "@/store/auth";
+
 import { Component, Mixins } from "vue-property-decorator";
 import { navigationIcons, globalIcons } from "@/assets/icons/icons";
+import { BottomBarItem } from "@/types/bottomBar.types";
 
 import ResponsiveMixin from "@/mixins/responsiveMixin";
 
 import BaseIcon from "../Base/BaseIcon.vue";
+
+const auth = namespace("auth");
 
 @Component({
   components: {
@@ -30,6 +42,67 @@ import BaseIcon from "../Base/BaseIcon.vue";
 export default class BottomBar extends Mixins(ResponsiveMixin) {
   public navigationIcons = navigationIcons;
   public globalIcons = globalIcons;
+
+  public selectedItem = 0;
+
+  @auth.State("authenticated")
+  public authenticated!: State["authenticated"];
+
+  get items(): BottomBarItem[] {
+    const commonItems: BottomBarItem[] = [
+      {
+        path: "/",
+        name: "Home",
+        icon: this.navigationIcons.homeIcon,
+      },
+      {
+        path: "/post",
+        name: "Post a Job",
+        icon: this.navigationIcons.plusIcon,
+      },
+      {
+        path: "/jobs",
+        name: "Browse Jobs",
+        icon: this.navigationIcons.listIcon,
+      },
+    ];
+
+    if (this.authenticated) {
+      return [
+        ...commonItems,
+        {
+          path: "/profile",
+          name: "Profile",
+          icon: this.navigationIcons.accountIcon,
+        },
+      ];
+    } else {
+      return [
+        ...commonItems,
+        {
+          path: "/signin",
+          name: "Sign In",
+          icon: this.navigationIcons.signInIcon,
+        },
+      ];
+    }
+  }
+
+  created() {
+    const storedSelectedItem = localStorage.getItem("currentTab");
+    if (storedSelectedItem !== null) {
+      this.selectedItem = parseInt(storedSelectedItem);
+    }
+  }
+
+  getFilled(index: number) {
+    return index === this.selectedItem ? true : false;
+  }
+
+  selectItem(index: number) {
+    this.selectedItem = index;
+    localStorage.setItem("currentTab", this.selectedItem.toString());
+  }
 }
 </script>
 
@@ -68,6 +141,6 @@ export default class BottomBar extends Mixins(ResponsiveMixin) {
 }
 
 .active {
-  color: #007bff; /* Adjust active color */
+  color: var(--purple);
 }
 </style>

@@ -21,7 +21,7 @@
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import { TopSectionItem } from "@/types/types";
-import { topSectionIcons } from "@/assets/icons/icons";
+import { navigationIcons } from "@/assets/icons/icons";
 
 import BaseIcon from "./Base/BaseIcon.vue";
 
@@ -32,27 +32,27 @@ import BaseIcon from "./Base/BaseIcon.vue";
 })
 export default class TopSection extends Vue {
   public name = "TopSection";
-  public topSectionIcons = topSectionIcons;
+  public topSectionIcons = navigationIcons;
 
   public items: TopSectionItem[] = [
     {
       name: "Appointments",
-      icon: this.topSectionIcons.medicineIcon,
+      icon: this.topSectionIcons.signInIcon,
       number: 213,
     },
     {
       name: "New Patients",
-      icon: this.topSectionIcons.newPatientIcon,
+      icon: this.topSectionIcons.signInIcon,
       number: 104,
     },
     {
       name: "Operations",
-      icon: this.topSectionIcons.operationsIcon,
+      icon: this.topSectionIcons.signInIcon,
       number: 24,
     },
     {
       name: "Hospital Earnings",
-      icon: this.topSectionIcons.hospitalIcon,
+      icon: this.topSectionIcons.signInIcon,
       number: "$ 12,174",
     },
   ];

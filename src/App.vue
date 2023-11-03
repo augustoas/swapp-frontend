@@ -2,11 +2,11 @@
   <v-app id="app">
     <div>
       <TopBar />
+      <v-main class="main-class">
+        <router-view />
+      </v-main>
       <BottomBar />
     </div>
-    <v-main>
-      <router-view />
-    </v-main>
   </v-app>
 </template>
 
@@ -28,4 +28,16 @@ export default Vue.extend({
 
 <style lang="scss">
 @import "styles.scss";
+
+.main-class {
+  margin-top: 80px; /* height of the TopBar */
+  margin-bottom: 60px; /* height of the BottomBar */
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow-y: scroll;
+  overflow-x: hidden;
+}
 </style>

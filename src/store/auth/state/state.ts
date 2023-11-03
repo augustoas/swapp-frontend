@@ -2,10 +2,9 @@ import { State } from "./state.types";
 
 const defaultState = () =>
   ({
-    account: {} as State["account"],
-    accessToken: "" as State["accessToken"],
+    auth: {} as State["auth"],
     authenticated: false as State["authenticated"],
-    errors: {} as State["errors"],
+    error: {} as State["error"],
   } as State);
 
 const state = defaultState();

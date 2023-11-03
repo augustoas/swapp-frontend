@@ -1,10 +1,15 @@
 <template>
   <div class="button-container">
     <button
-      :class="{ 'custom-button': !isRounded, 'rounded-button': isRounded }"
+      :class="{
+        'custom-button': !isCircle,
+        'rounded-button': isCircle,
+        'square-button': isSquare,
+      }"
       :style="{ backgroundColor: getButtonColor(), color: getTextColor() }"
       @mouseover="isHovered = true"
       @mouseleave="isHovered = false"
+      @click="$emit('click')"
     >
       {{ text }}
     </button>
@@ -17,12 +22,12 @@ import { Component, Prop, Vue } from "vue-property-decorator";
 @Component
 export default class BaseButton extends Vue {
   @Prop({ required: true }) readonly text!: string;
-  @Prop({ default: "var(--button-blue)" }) readonly color!: string;
+  @Prop({ default: "var(--purple)" }) readonly color!: string;
   @Prop({ default: "white" }) readonly textColor!: string;
-  @Prop({ default: "var(--mid-purple)" })
-  readonly hoverColor!: string;
+  @Prop({ default: "var(--mid-purple)" }) readonly hoverColor!: string;
   @Prop({ default: false }) readonly secondary!: boolean;
-  @Prop({ default: false }) readonly isRounded!: boolean;
+  @Prop({ default: false }) readonly isCircle!: boolean;
+  @Prop({ default: false }) readonly isSquare!: boolean;
 
   getButtonColor() {
     const color = this.secondary ? "var(--grey)" : "var(--purple)";
@@ -69,5 +74,9 @@ export default class BaseButton extends Vue {
   display: flex;
   align-items: center;
   justify-content: center; /* To center the "+" text */
+}
+
+.square-button {
+  border-radius: 4px !important;
 }
 </style>

@@ -21,7 +21,7 @@
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import { sideBarIcons } from "@/assets/icons/icons";
+import { navigationIcons } from "@/assets/icons/icons";
 import BaseIcon from "../Base/BaseIcon.vue";
 
 @Component({
@@ -32,36 +32,36 @@ import BaseIcon from "../Base/BaseIcon.vue";
 export default class SideBar extends Vue {
   public name = "SideBar";
   public selectedItem = 0;
-  public sideBarIcons = sideBarIcons;
+  public sideBarIcons = navigationIcons;
 
   public items = [
     {
       name: "Dashboard",
-      icon: this.sideBarIcons.dashboardIcon,
+      icon: this.sideBarIcons.signInIcon,
     },
     {
       name: "Appointments",
-      icon: this.sideBarIcons.appointmentIcon,
+      icon: this.sideBarIcons.signInIcon,
     },
     {
       name: "Doctors",
-      icon: this.sideBarIcons.doctorIcon,
+      icon: this.sideBarIcons.signInIcon,
     },
     {
       name: "Departments",
-      icon: this.sideBarIcons.doctorIcon,
+      icon: this.sideBarIcons.signInIcon,
     },
     {
       name: "Patients",
-      icon: this.sideBarIcons.patientIcon,
+      icon: this.sideBarIcons.signInIcon,
     },
     {
       name: "Payments",
-      icon: this.sideBarIcons.paymentIcon,
+      icon: this.sideBarIcons.signInIcon,
     },
     {
       name: "Help",
-      icon: this.sideBarIcons.helpIcon,
+      icon: this.sideBarIcons.signInIcon,
     },
   ];
 

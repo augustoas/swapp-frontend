@@ -2,13 +2,21 @@
   <div>
     <!-- Desktop version -->
     <div v-if="!isMobile" class="top-bar top-bar--desktop">
-      <div class="top-bar__logo">
+      <div class="top-bar__logo" @click="navigateToJobs('/')">
         <img src="@/assets/swapp-logo-brand.png" alt="Swapp" />
       </div>
       <div class="top-bar__center-col">
-        <BaseButton class="top-bar__menu-item" :text="'Post a Task'" />
-        <span class="top-bar__menu-item">Browse tasks</span>
-        <span class="top-bar__menu-item">How it works</span>
+        <BaseButton
+          class="top-bar__menu-item"
+          :text="'Post a Task'"
+          @click="navigateToJobs('/post')"
+        />
+        <span class="top-bar__menu-item" @click="navigateToJobs('/jobs')">
+          Browse tasks
+        </span>
+        <span class="top-bar__menu-item" @click="navigateToJobs('/')">
+          How it works
+        </span>
       </div>
       <div class="top-bar__right-col" v-if="authenticated">
         <div>
@@ -22,8 +30,12 @@
         <img src="@/assets/circle.png" alt="Circle" />
       </div>
       <div class="top-bar__right-col" v-else>
-        <span class="top-bar__menu-item">Sign up</span>
-        <span class="top-bar__menu-item">Log in</span>
+        <span class="top-bar__menu-item" @click="navigateToJobs('/signup')">
+          Sign up
+        </span>
+        <span class="top-bar__menu-item" @click="navigateToJobs('/signin')">
+          Log in
+        </span>
         <BaseButton :text="'Become a Swapper'" :secondary="true" />
       </div>
     </div>
@@ -42,9 +54,10 @@
       ></v-text-field>
       <div class="top-bar__right-col">
         <BaseButton
+          @click="navigateToJobs('/post')"
           class="top-bar__menu-item--mobile"
           :text="'+'"
-          :isRounded="true"
+          :isCircle="true"
         />
       </div>
     </div>
@@ -52,6 +65,7 @@
 </template>
 
 <script lang="ts">
+import { ActionsSignatures, State } from "@/store/auth";
 import { Component, Mixins } from "vue-property-decorator";
 import { namespace } from "vuex-class";
 
@@ -68,7 +82,13 @@ const auth = namespace("auth");
 })
 export default class TopBar extends Mixins(ResponsiveMixin) {
   @auth.State("authenticated")
-  public authenticated!: boolean;
+  public authenticated!: State["authenticated"];
+
+  public navigateToJobs(path) {
+    if (this.$route.path !== path) {
+      this.$router.push(path);
+    }
+  }
 }
 </script>
 

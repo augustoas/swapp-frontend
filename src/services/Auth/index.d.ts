@@ -1,4 +1,4 @@
 export type AuthConfigurationService = {
-  login: <R>() => Promise<ClientResponse<R>>;
-  loginGoogle: <R>() => Promise<ClientResponse<R>>;
+  signIn: <T, R>(payload: T) => Promise<ClientResponse<R>>;
+  signUp: <T, R>(payload: T) => Promise<ClientResponse<R>>;
 };

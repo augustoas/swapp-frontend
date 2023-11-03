@@ -27,6 +27,7 @@ export default class BaseIcon extends Vue {
 
 <style scoped>
 .icon-wrapper {
-  display: flex;
+  display: inline-block;
+  flex-shrink: 0;
 }
 </style>

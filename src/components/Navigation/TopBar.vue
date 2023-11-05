@@ -2,19 +2,19 @@
   <div>
     <!-- Desktop version -->
     <div v-if="!isMobile" class="top-bar top-bar--desktop">
-      <div class="top-bar__logo" @click="navigateToJobs('/')">
+      <div class="top-bar__logo" @click="navigateToPath('/')">
         <img src="@/assets/swapp-logo-brand.png" alt="Swapp" />
       </div>
       <div class="top-bar__center-col">
         <BaseButton
           class="top-bar__menu-item"
           :text="'Post a Task'"
-          @click="navigateToJobs('/post')"
+          @click="navigateToPath('/post')"
         />
-        <span class="top-bar__menu-item" @click="navigateToJobs('/jobs')">
+        <span class="top-bar__menu-item" @click="navigateToPath('/jobs')">
           Browse tasks
         </span>
-        <span class="top-bar__menu-item" @click="navigateToJobs('/')">
+        <span class="top-bar__menu-item" @click="navigateToPath('/')">
           How it works
         </span>
       </div>
@@ -30,10 +30,10 @@
         <img src="@/assets/circle.png" alt="Circle" />
       </div>
       <div class="top-bar__right-col" v-else>
-        <span class="top-bar__menu-item" @click="navigateToJobs('/signup')">
+        <span class="top-bar__menu-item" @click="navigateToPath('/signup')">
           Sign up
         </span>
-        <span class="top-bar__menu-item" @click="navigateToJobs('/signin')">
+        <span class="top-bar__menu-item" @click="navigateToPath('/signin')">
           Log in
         </span>
         <BaseButton :text="'Become a Swapper'" :secondary="true" />
@@ -54,7 +54,7 @@
       ></v-text-field>
       <div class="top-bar__right-col">
         <BaseButton
-          @click="navigateToJobs('/post')"
+          @click="navigateToPath('/post')"
           class="top-bar__menu-item--mobile"
           :text="'+'"
           :isCircle="true"
@@ -84,7 +84,7 @@ export default class TopBar extends Mixins(ResponsiveMixin) {
   @auth.State("authenticated")
   public authenticated!: State["authenticated"];
 
-  public navigateToJobs(path) {
+  public navigateToPath(path) {
     if (this.$route.path !== path) {
       this.$router.push(path);
     }

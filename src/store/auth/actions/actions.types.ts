@@ -6,10 +6,9 @@ export type SignIn = {
 };
 
 export type SignUp = {
-  firstname: string;
-  lastname: string;
-  emil: string;
+  email: string;
   password: string;
+  confirmPassword: string;
 };
 
 export type ActionsSignatures = {

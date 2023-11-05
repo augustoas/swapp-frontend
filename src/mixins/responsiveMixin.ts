@@ -2,7 +2,7 @@ import { Vue, Component } from "vue-property-decorator";
 
 @Component
 export default class ResponsiveMixin extends Vue {
-  public isMobile: boolean = window.innerWidth < 920;
+  public isMobile: boolean = window.innerWidth < 840;
   created() {
     window.addEventListener("resize", this.checkIsMobile);
     this.checkIsMobile();
@@ -13,6 +13,6 @@ export default class ResponsiveMixin extends Vue {
   }
 
   checkIsMobile() {
-    this.isMobile = window.innerWidth < 920;
+    this.isMobile = window.innerWidth < 840;
   }
 }

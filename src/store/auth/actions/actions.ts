@@ -12,7 +12,6 @@ import { AuthService } from "@/services";
 
 const actions: ActionTree<State, RootState> = {
   async signIn({ commit }, payload) {
-
     try {
       const response = await AuthService.signIn<ReturnType<ActionsSignatures["signIn"]>, State["auth"]>(payload);
       if (!response.data) throw Error("Response from server was empty");
@@ -27,17 +26,15 @@ const actions: ActionTree<State, RootState> = {
         commit(Mutations.SET_AUTHENTICATED, true)
       } else {
         commit(Mutations.SET_ERROR, { error: Errors.SIGNIN_ERROR, message: "Email or password is incorrect" });
-        console.log("token not found");
         return "Token not found in the response"; // return error message
       }
     } catch (error) {
-      console.log("error catch ", error);
-      commit(Mutations.SET_ERROR, { error: Errors.SIGNIN_ERROR, message: "Email or password is incorrect" });
-      return "Something went wrong";
+      commit(Mutations.SET_ERROR, { error: Errors.SIGNIN_ERROR, message: "Something went wrong" });
+      return "Something went wrong, try again later.";
     }
   },
 
-  async signUp({ commit }) {
+  async signUp({ commit }, payload) {
     // try {
     //   commit(Mutations.LOGIN, false);
     //   return await SCBlendingService.downloadBlendRawCoalRelease<ReturnType<ActionsSignatures['downloadRawCoalRelease']>>();

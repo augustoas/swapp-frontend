@@ -4,6 +4,7 @@ import LandingPage from "@/views/LandingPage.vue";
 import NewJob from "@/views/NewJob.vue";
 import Jobs from "@/views/Jobs.vue";
 import AuthForm from "@/components/Forms/AuthForm.vue";
+import Chat from "@/components/Chat/Chat.vue";
 import Profile from "@/views/Profile.vue";
 
 Vue.use(VueRouter);
@@ -40,6 +41,11 @@ const routes: Array<RouteConfig> = [
     path: "/profile",
     name: "profile",
     component: Profile,
+  },
+  {
+    path: "/chat",
+    name: "chat",
+    component: Chat,
   },
 ];
 

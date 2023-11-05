@@ -9,6 +9,7 @@
       <div class="auth-form__input-group">
         <input
           class="auth-form__input"
+          :class="{ 'auth-form__input-error': validationErrors.email }"
           type="email"
           id="email"
           v-model="email"
@@ -18,6 +19,7 @@
       <div class="auth-form__input-group auth-form__input-group--password">
         <input
           class="auth-form__input"
+          :class="{ 'auth-form__input-error': validationErrors.password }"
           id="password"
           v-model="password"
           placeholder="Enter your password"
@@ -45,24 +47,51 @@
       >
         <input
           class="auth-form__input"
-          id="repeat-password"
-          v-model="password"
+          :class="{
+            'auth-form__input-error': validationErrors.confirmPassword,
+          }"
+          id="confirm-password"
+          v-model="confirmPassword"
           placeholder="Repeat your password"
           type="password"
         />
       </div>
-      <div v-if="error.message">{{ error.message }}.</div>
-      <div class="auth-form__forgot-password">
+      <div
+        v-if="!isLoading && error.message && !hasValidationErrors"
+        class="auth-form__error-message"
+      >
+        {{ error.message }}.
+      </div>
+      <div v-for="(errorList, key) in validationErrors" :key="key">
+        <div
+          v-for="(error, index) in errorList"
+          :key="index"
+          class="auth-form__error-message"
+        >
+          {{ error }}
+        </div>
+      </div>
+      <div class="auth-form__forgot-password" v-if="!isSignUp">
         <a href="#">Forgot password?</a>
       </div>
       <BaseButton
+        v-if="!isLoading"
         class="auth-form__button"
         :text="'Continue'"
         :isSquare="true"
-        @click="onSignIn"
+        @click="isSignUp ? onSignUp() : onSignIn()"
       ></BaseButton>
+      <v-progress-circular
+        class="auth-form__circular-progress"
+        v-if="isLoading"
+        indeterminate
+        size="40"
+      ></v-progress-circular>
       <p class="auth-form__signup-prompt">
-        Don't have an account? <a href="#">Sign up</a>
+        {{ componentMapping[component].questionText }}
+        <a href="#" @click="navigateToPath(isSignUp ? '/signin' : '/signup')">{{
+          componentMapping[component].textButton
+        }}</a>
       </p>
       <div class="auth-form__alternative-logins">
         <button @click="signInWith('Google')">Login with Google</button>
@@ -77,8 +106,14 @@ import { namespace } from "vuex-class";
 import { ActionsSignatures, State } from "@/store/auth";
 
 import { globalIcons } from "@/assets/icons/icons";
-import { Component, Mixins, Prop } from "vue-property-decorator";
+import { Component, Mixins, Prop, Watch } from "vue-property-decorator";
 import ResponsiveMixin from "@/mixins/responsiveMixin";
+
+import {
+  validateEmail,
+  validatePassword,
+  validateConfirmPassword,
+} from "@/utils/validations";
 
 import BaseIcon from "@/components/Base/BaseIcon.vue";
 import BaseButton from "@/components/Base/BaseButton.vue";
@@ -94,19 +129,27 @@ const auth = namespace("auth");
 export default class AuthForm extends Mixins(ResponsiveMixin) {
   @Prop({ required: true }) readonly component!: string;
 
+  public isLoading = false;
+  public validationErrors: Record<string, string[]> = {};
+
   public globalIcons = globalIcons;
 
   public componentMapping = {
     SignIn: {
       title: "Iniciar Sesión",
+      questionText: "Don't have an account?",
+      textButton: "Sign up",
     },
     SignUp: {
       title: "Registrarse",
+      questionText: "Already have an account?",
+      textButton: "Sign in",
     },
   };
 
   public email = "";
   public password = "";
+  public confirmPassword = "";
   public showPassword = false;
 
   @auth.State("error")
@@ -115,26 +158,93 @@ export default class AuthForm extends Mixins(ResponsiveMixin) {
   @auth.Action
   public signIn!: ActionsSignatures["signIn"];
 
+  @auth.Action
+  public signUp!: ActionsSignatures["signUp"];
+
   get isSignUp(): boolean {
     return this.component === "SignUp";
+  }
+
+  get hasValidationErrors(): boolean {
+    return Object.keys(this.validationErrors).length > 0;
+  }
+
+  public navigateToPath(path) {
+    if (this.$route.path !== path) {
+      this.$router.push(path);
+    }
   }
 
   public togglePassword(): void {
     this.showPassword = !this.showPassword;
   }
 
+  public validateInputs(): boolean {
+    this.validationErrors = {};
+
+    const emailResult = validateEmail(this.email);
+    if (emailResult.errors.length > 0) {
+      this.validationErrors.email = emailResult.errors;
+    }
+
+    const passwordResult = validatePassword(this.password);
+    if (passwordResult.errors.length > 0 && this.isSignUp) {
+      this.validationErrors.password = passwordResult.errors;
+    }
+
+    const confirmPasswordResult = validateConfirmPassword(
+      this.password,
+      this.confirmPassword
+    );
+    if (confirmPasswordResult.errors.length > 0 && this.isSignUp) {
+      this.validationErrors.confirmPassword = confirmPasswordResult.errors;
+    }
+
+    return Object.keys(this.validationErrors).length === 0;
+  }
+
   public async onSignIn() {
+    if (!this.validateInputs()) return;
+
     const payload = {
       email: this.email,
       password: this.password,
     };
 
-    this.signIn(payload);
+    this.isLoading = true;
+
+    await this.signIn(payload);
+    await new Promise((resolve) => setTimeout(resolve, 2000));
+
+    this.isLoading = false;
+  }
+
+  public async onSignUp() {
+    if (!this.validateInputs()) return;
+
+    const payload = {
+      email: this.email,
+      password: this.password,
+      confirmPassword: this.confirmPassword,
+    };
+
+    this.isLoading = true;
+
+    await this.signUp(payload);
+    await new Promise((resolve) => setTimeout(resolve, 2000));
+
+    this.isLoading = false;
   }
 
   public signInWith(platform) {
     console.log("signInWith: ", platform);
     // Handle logic for third-party login
+  }
+
+  @Watch("component")
+  onComponentChange(newVal: string, oldVal: string) {
+    console.log("changed", newVal, oldVal);
+    this.validationErrors = {};
   }
 }
 </script>
@@ -207,6 +317,16 @@ export default class AuthForm extends Mixins(ResponsiveMixin) {
   font-size: 14px;
 }
 
+.auth-form__input-error {
+  border: 1px solid red !important;
+}
+.auth-form__error-message {
+  color: red;
+  font-size: 12px;
+  margin-top: 5px;
+  text-align: left;
+}
+
 .auth-form__toggle-password {
   position: absolute;
   top: 10px;
@@ -218,17 +338,20 @@ export default class AuthForm extends Mixins(ResponsiveMixin) {
 .auth-form__forgot-password {
   font-size: 14px;
   text-align: right;
-  margin-bottom: 20px;
 }
 
 .auth-form__button {
   background-color: var(--purple);
   color: #fff;
-  padding: 10px 20px;
   border: none;
   border-radius: 4px;
   margin-bottom: 20px;
+  margin-top: 20px;
   cursor: pointer;
+}
+
+.auth-form__circular-progress {
+  margin: 20px 0px 20px 0px;
 }
 
 .auth-form__signup-prompt {
@@ -239,11 +362,12 @@ export default class AuthForm extends Mixins(ResponsiveMixin) {
 .auth-form__alternative-logins button {
   width: 100%;
   display: flex;
-  margin-top: 10px;
+  margin-top: 20px;
+  margin-bottom: 20px;
   background-color: transparent;
   border: 1px solid #ccc;
   border-radius: 4px;
-  padding: 10px 20px;
+  padding: 10px 10px;
   font-size: 14px;
   cursor: pointer;
 }

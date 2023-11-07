@@ -242,8 +242,7 @@ export default class AuthForm extends Mixins(ResponsiveMixin) {
   }
 
   @Watch("component")
-  onComponentChange(newVal: string, oldVal: string) {
-    console.log("changed", newVal, oldVal);
+  onComponentChange() {
     this.validationErrors = {};
   }
 }

@@ -18,10 +18,15 @@ const actions: ActionTree<State, RootState> = {
 
       // Assuming the token is directly inside response.data.payload
       const token = response.data.payload.token;
+      const user = response.data.payload.user;
+
+      console.log('try signin response.data.payload', response.data.payload);
+      console.log('auth', user);
       
       if (token) {
         // Set the cookie here.
         Cookies.set('auth_token', token, { expires: 1, path: '/', secure: true, sameSite: 'strict' });
+        Cookies.set('auth_email', user.email , { expires: 1, path: '/', secure: true, sameSite: 'strict' });
         commit(Mutations.SIGNIN, response.data.payload)
         commit(Mutations.SET_AUTHENTICATED, true)
       } else {
@@ -51,11 +56,13 @@ const actions: ActionTree<State, RootState> = {
   },
 
   async authenticate({ commit }, payload) {
-    const token = payload;
+    const token = payload.token;
+    const auth_email = payload.auth_email;
 
     if (token) {
       commit(Mutations.SET_AUTHENTICATED, true)
       commit(Mutations.SET_TOKEN, token);
+      commit(Mutations.SET_AUTH_EMAIL, auth_email);
     }
   }
 };

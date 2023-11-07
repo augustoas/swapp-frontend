@@ -7,8 +7,8 @@ export enum Errors {
 }
 
 export type IUser = {
-  firstname: string;
-  lastname: string;
+  firstname?: string;
+  lastname?: string;
   email: string;
   gender?: string;
   resetToken?: string;
@@ -17,7 +17,7 @@ export type IUser = {
 };
 
 export type IAuth = {
-  auth?: IUser;
+  user?: IUser;
   token?: string;
 };
 
@@ -29,5 +29,6 @@ export type Error = {
 export type State = {
   auth: IAuth;
   authenticated: boolean;
+  authEmail: string;
   error: Error;
 };

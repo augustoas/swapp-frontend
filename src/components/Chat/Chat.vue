@@ -3,16 +3,30 @@
     <div class="chat-form__section">
       <h2 class="chat-form__title">Chat</h2>
       <div class="chat-form__divider-line"></div>
-      <h2 class="chat-form__subtitle">Send message</h2>
+      <div class="chat-form__chat-messages">
+        <div
+          v-for="message in messages"
+          :key="message.timestamp"
+          :class="{
+            'chat-form__message': true,
+            'chat-form__message--own': isOwnMessage(message),
+          }"
+        >
+          <p class="chat-form__message__content">{{ message.message }}</p>
+          <span class="chat-form__message__timestamp">{{
+            formatDate(message.timestamp)
+          }}</span>
+        </div>
+      </div>
     </div>
     <div class="chat-form__body">
       <div class="chat-form__input-group">
         <input
           class="chat-form__input"
-          type="email"
-          id="email"
+          type="text"
+          id="text-input"
           v-model="inputMessage"
-          placeholder="Enter your email"
+          placeholder="Send message"
         />
       </div>
       <BaseButton
@@ -38,9 +52,10 @@ import BaseButton from "@/components/Base/BaseButton.vue";
 const auth = namespace("auth");
 
 interface Message {
-  sender: string;
-  to: string;
-  text: string;
+  emailJobCreator: string;
+  emailJobWorker: string;
+  messageOwner: string;
+  message: string;
   timestamp: number;
 }
 
@@ -53,31 +68,52 @@ export default class Chat extends Mixins(ResponsiveMixin) {
   @auth.State("auth")
   public auth!: State["auth"];
 
-  readonly messages!: Message[];
+  public messages: Message[] = [];
   private inputMessage = "";
   private socket: Socket | null = null;
 
   created() {
     console.log("created: create socket connection");
-    // this.socket = io("http://localhost:3000");
+    this.socket = io("http://localhost:4000");
 
-    // this.socket.on("receive_message", (message: Message) => {
-    //   this.messages.push(message);
-    // });
+    this.socket.on("createChat", (message: Message) => {
+      console.log("createChat message", message);
+      // this.messages.push(message);
+    });
+
+    this.socket.on("findAllChat", (messages: Message[]) => {
+      console.log("findAllChat message", messages);
+      this.messages = messages;
+    });
   }
 
   public sendMessage() {
     if (this.inputMessage.trim()) {
-      const message: Message = {
-        sender: "user1@gmail.com", // Replace with dynamic username or ID
-        to: "user2@gmail.com",
-        text: this.inputMessage,
+      const payload: Message = {
+        emailJobCreator: "user1@gmail.com", // Replace with dynamic username or ID
+        emailJobWorker: "user2@gmail.com",
+        messageOwner: "augusto.alvarez.smith@gmail.com",
+        message: this.inputMessage,
         timestamp: Date.now(), // simple ID based on current time
       };
-      console.log("message", message);
-      // this.socket?.emit("send_message", message);
+      console.log("message", payload);
+      console.log("socket", this.socket);
+      this.socket?.emit("createChat", payload);
+      this.socket?.emit("findAllChat", {
+        emailJobCreator: "user1@gmail.com", // Replace with dynamic username or ID
+        emailJobWorker: "user2@gmail.com",
+      });
       this.inputMessage = "";
     }
+  }
+
+  public isOwnMessage(message: Message): boolean {
+    return this.auth?.user.email === message.messageOwner; // Assuming this.auth.userEmail contains the email of the current user.
+  }
+
+  public formatDate(timestamp: number): string {
+    const date = new Date(timestamp);
+    return `${date.getHours()}:${date.getMinutes()}`;
   }
 
   beforeDestroy() {
@@ -165,6 +201,37 @@ export default class Chat extends Mixins(ResponsiveMixin) {
   margin-bottom: 20px;
   margin-top: 20px;
   cursor: pointer;
+}
+
+.chat-form__chat-messages {
+  max-height: 400px;
+  overflow-y: auto;
+  padding: 20px;
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.chat-form__message {
+  max-width: 70%;
+  padding: 10px 15px;
+  margin-bottom: 15px;
+  border-radius: 10px;
+  background-color: #f0f0f0;
+
+  &--own {
+    background-color: #dcf8c6; // Light green background for own messages
+    margin-left: auto;
+    text-align: right;
+  }
+}
+
+.chat-form__message__content {
+  margin: 0;
+}
+
+.chat-form__message__timestamp {
+  font-size: 10px;
+  opacity: 0.7;
 }
 
 /* MOBILE SPECIFIC */

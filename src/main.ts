@@ -7,9 +7,10 @@ import vuetify from "./plugins/vuetify";
 import Cookies from "js-cookie";
 
 const token = Cookies.get("auth_token");
+const auth_email = Cookies.get("auth_email");
 
 if (token) {
-  store.dispatch("auth/authenticate", token);
+  store.dispatch("auth/authenticate", { token, auth_email });
 }
 
 Vue.config.productionTip = false;

@@ -13,15 +13,15 @@ const mutations: MutationTree<State> = {
     state.auth = {};
   },
   [Mutations.SET_TOKEN](state, token) {
-    console.log("SET TOKEN MUTATION", token);
     state.auth.token = token;
   },
+  [Mutations.SET_AUTH_EMAIL](state, email) {
+    state.auth.user.email = email;
+  },
   [Mutations.SET_AUTHENTICATED](state, payload) {
-    console.log("SET AUTH MUTATION", payload);
     state.authenticated = payload;
   },
   [Mutations.SET_ERROR](state, payload) {
-    console.log("SET Error payload", payload);
     state.error = payload;
   },
 };

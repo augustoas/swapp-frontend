@@ -23,8 +23,8 @@ const actions: ActionTree<State, RootState> = {
   
       if (token) {
         Cookies.set('auth_token', token, { expires: 1, path: '/', secure: true, sameSite: 'strict' });
-        Cookies.set('auth_email', user.email, { expires: 1, path: '/', secure: true, sameSite: 'strict' });
-        commit(Mutations.SIGNIN, user);
+        localStorage.setItem('auth_user', JSON.stringify(user));
+        commit(Mutations.SIGNIN, response.data.payload);
         commit(Mutations.SET_AUTHENTICATED, true);
         return true;
       } else {
@@ -54,22 +54,19 @@ const actions: ActionTree<State, RootState> = {
 
   async signOut({ commit }) {
     Cookies.remove('auth_token', { path: '/' });
-    Cookies.remove('auth_email', { path: '/' });
-
+    localStorage.removeItem('auth_user');
+    
     commit(Mutations.SIGNIN, {})
     commit(Mutations.SET_AUTHENTICATED, false)
-    commit(Mutations.SET_TOKEN, "")
     return true;
   },
 
   async authenticate({ commit }, payload) {
     const token = payload.token;
-    const auth_email = payload.auth_email;
 
     if (token) {
-      commit(Mutations.SET_AUTHENTICATED, true)
-      commit(Mutations.SET_TOKEN, token);
-      commit(Mutations.SET_AUTH_EMAIL, auth_email);
+      commit(Mutations.SIGNIN, payload);
+      commit(Mutations.SET_AUTHENTICATED, true);
     }
   }
 };

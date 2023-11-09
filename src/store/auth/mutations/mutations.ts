@@ -7,16 +7,12 @@ const inititalState = defaultState();
 
 const mutations: MutationTree<State> = {
   [Mutations.SIGNIN](state, payload) {
-    state.auth = payload;
+    state.auth.token = payload.token;
+    state.auth.user = payload.user;
+    state.authenticated = true;
   },
   [Mutations.SIGNOUT](state) {
     state.auth = {};
-  },
-  [Mutations.SET_TOKEN](state, token) {
-    state.auth.token = token;
-  },
-  [Mutations.SET_AUTH_EMAIL](state, email) {
-    state.auth.user.email = email;
   },
   [Mutations.SET_AUTHENTICATED](state, payload) {
     state.authenticated = payload;

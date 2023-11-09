@@ -48,6 +48,9 @@ export default class BottomBar extends Mixins(ResponsiveMixin) {
   @auth.State("authenticated")
   public authenticated!: State["authenticated"];
 
+  @auth.State("auth")
+  public auth!: State["auth"];
+
   get items(): BottomBarItem[] {
     const commonItems: BottomBarItem[] = [
       {

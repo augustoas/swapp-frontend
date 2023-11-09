@@ -7,7 +7,6 @@ const defaultState = () =>
         email: "",
       },
     } as State["auth"],
-    authEmail: "" as State["authEmail"],
     authenticated: false as State["authenticated"],
     error: {} as State["error"],
   } as State);

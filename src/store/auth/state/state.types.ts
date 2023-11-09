@@ -30,6 +30,5 @@ export type Error = {
 export type State = {
   auth: IAuth;
   authenticated: boolean;
-  authEmail: string;
   error: Error;
 };

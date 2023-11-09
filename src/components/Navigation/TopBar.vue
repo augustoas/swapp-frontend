@@ -122,7 +122,6 @@ export default class TopBar extends Mixins(ResponsiveMixin) {
 
   public onSignOut() {
     this.signOut();
-    console.log("logout");
   }
 }
 </script>

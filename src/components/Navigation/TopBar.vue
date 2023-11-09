@@ -19,15 +19,38 @@
         </span>
       </div>
       <div class="top-bar__right-col" v-if="authenticated">
-        <div>
-          <img
-            class="top-bar__notification-icon"
-            src="@/assets/bell.png"
-            alt="Bell"
-          />
-          <span class="top-bar__notification">9</span>
-        </div>
-        <img src="@/assets/circle.png" alt="Circle" />
+        <img
+          class="top-bar__notification-icon"
+          src="@/assets/bell.png"
+          alt="Bell"
+        />
+        <span class="top-bar__notification">9</span>
+        <v-menu offset-y>
+          <template v-slot:activator="{ on, attrs }">
+            <div
+              v-bind="attrs"
+              v-on="on"
+              class="top-bar__profile-menu-activator"
+            >
+              <BaseIcon
+                class="top-bar__account-icon"
+                :icon="navigationIcons.accountIcon"
+                :width="30"
+                :height="30"
+                :viewBox="'0 0 20 20'"
+              />
+            </div>
+          </template>
+
+          <v-list>
+            <v-list-item @click="navigateToPath('/profile')">
+              <v-list-item-title>My Profile</v-list-item-title>
+            </v-list-item>
+            <v-list-item @click="onSignOut">
+              <v-list-item-title>Log Out</v-list-item-title>
+            </v-list-item>
+          </v-list>
+        </v-menu>
       </div>
       <div class="top-bar__right-col" v-else>
         <span class="top-bar__menu-item" @click="navigateToPath('/signup')">
@@ -36,7 +59,11 @@
         <span class="top-bar__menu-item" @click="navigateToPath('/signin')">
           Log in
         </span>
-        <BaseButton :text="'Become a Swapper'" :secondary="true" />
+        <BaseButton
+          :text="'Become a Swapper'"
+          :secondary="true"
+          @click="navigateToPath('/newswapper')"
+        />
       </div>
     </div>
     <!-- Mobile version -->
@@ -44,14 +71,6 @@
       <div class="top-bar__logo">
         <img src="@/assets/swapp-logo-only.png" alt="Swapp" />
       </div>
-      <v-text-field
-        class="top-bar__search-input"
-        rounded
-        label=""
-        prepend-inner-icon="mdi-magnify"
-        solo
-        dense
-      ></v-text-field>
       <div class="top-bar__right-col">
         <BaseButton
           @click="navigateToPath('/post')"
@@ -69,14 +88,18 @@ import { ActionsSignatures, State } from "@/store/auth";
 import { Component, Mixins } from "vue-property-decorator";
 import { namespace } from "vuex-class";
 
+import { navigationIcons } from "@/assets/icons/icons";
+
 import ResponsiveMixin from "@/mixins/responsiveMixin";
 
+import BaseIcon from "../Base/BaseIcon.vue";
 import BaseButton from "@/components/Base/BaseButton.vue";
 
 const auth = namespace("auth");
 
 @Component({
   components: {
+    BaseIcon,
     BaseButton,
   },
 })
@@ -84,10 +107,22 @@ export default class TopBar extends Mixins(ResponsiveMixin) {
   @auth.State("authenticated")
   public authenticated!: State["authenticated"];
 
+  @auth.Action
+  public signOut!: ActionsSignatures["signOut"];
+
+  public navigationIcons = navigationIcons;
+
+  public isModalVisible = false;
+
   public navigateToPath(path) {
     if (this.$route.path !== path) {
       this.$router.push(path);
     }
+  }
+
+  public onSignOut() {
+    this.signOut();
+    console.log("logout");
   }
 }
 </script>
@@ -115,11 +150,11 @@ export default class TopBar extends Mixins(ResponsiveMixin) {
 }
 
 .top-bar__search-input {
-  flex: 1; /* Make it take available space */
-  max-width: none !important; /* Override max-width */
-  margin: 20px 20px !important; /* Sides margin */
+  flex: 1;
+  max-width: none !important;
+  margin: 20px 20px !important;
   background-color: #fff !important;
-  border-radius: 20px !important; /* Rounded corners */
+  border-radius: 20px !important;
   .v-input__icon--prepend-inner {
     color: blue;
   }
@@ -164,7 +199,7 @@ export default class TopBar extends Mixins(ResponsiveMixin) {
   position: absolute;
   width: 15px;
   height: 15px;
-  right: 90px;
+  right: 70px;
   top: 24px;
   background-color: #ff6760;
   font-size: 9px;
@@ -175,7 +210,10 @@ export default class TopBar extends Mixins(ResponsiveMixin) {
 }
 
 .top-bar__notification-icon {
-  margin-right: 20px;
+  margin-right: 10px;
+}
+
+.top-bar__account-icon {
 }
 
 /* MOBILE */

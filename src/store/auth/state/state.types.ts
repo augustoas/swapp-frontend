@@ -4,6 +4,7 @@ import { AxiosError } from "axios";
 
 export enum Errors {
   SIGNIN_ERROR = "signInError",
+  SIGNUP_ERROR = "signUpError",
 }
 
 export type IUser = {

@@ -13,7 +13,25 @@
           type="email"
           id="email"
           v-model="email"
-          placeholder="Enter your email"
+          placeholder="Email"
+        />
+      </div>
+      <div v-if="isSignUp" class="auth-form__input-group-names">
+        <input
+          class="auth-form__input"
+          :class="{ 'auth-form__input-error': validationErrors.firstName }"
+          type="text"
+          id="first-name"
+          v-model="firstName"
+          placeholder="First name"
+        />
+        <input
+          class="auth-form__input"
+          :class="{ 'auth-form__input-error': validationErrors.lastName }"
+          type="text"
+          id="last-name"
+          v-model="lastName"
+          placeholder="Last name"
         />
       </div>
       <div class="auth-form__input-group auth-form__input-group--password">
@@ -22,7 +40,7 @@
           :class="{ 'auth-form__input-error': validationErrors.password }"
           id="password"
           v-model="password"
-          placeholder="Enter your password"
+          placeholder="Password"
           :type="showPassword ? 'text' : 'password'"
         />
         <div class="auth-form__password-icon" @click="togglePassword">
@@ -52,7 +70,7 @@
           }"
           id="confirm-password"
           v-model="confirmPassword"
-          placeholder="Repeat your password"
+          placeholder="Confirm password"
           type="password"
         />
       </div>
@@ -113,6 +131,7 @@ import {
   validateEmail,
   validatePassword,
   validateConfirmPassword,
+  validateOnlyText,
 } from "@/utils/validations";
 
 import BaseIcon from "@/components/Base/BaseIcon.vue";
@@ -150,6 +169,8 @@ export default class AuthForm extends Mixins(ResponsiveMixin) {
   public email = "";
   public password = "";
   public confirmPassword = "";
+  public firstName = "";
+  public lastName = "";
   public showPassword = false;
 
   @auth.State("error")
@@ -182,25 +203,53 @@ export default class AuthForm extends Mixins(ResponsiveMixin) {
   public validateInputs(): boolean {
     this.validationErrors = {};
 
-    const emailResult = validateEmail(this.email);
+    const emailResult = validateEmail(this.email, "Email");
     if (emailResult.errors.length > 0) {
       this.validationErrors.email = emailResult.errors;
     }
 
-    const passwordResult = validatePassword(this.password);
+    const passwordResult = validatePassword(this.password, "Password");
     if (passwordResult.errors.length > 0 && this.isSignUp) {
       this.validationErrors.password = passwordResult.errors;
     }
 
     const confirmPasswordResult = validateConfirmPassword(
       this.password,
-      this.confirmPassword
+      this.confirmPassword,
+      "Password"
     );
     if (confirmPasswordResult.errors.length > 0 && this.isSignUp) {
       this.validationErrors.confirmPassword = confirmPasswordResult.errors;
     }
 
+    const firstNameResult = validateOnlyText(this.firstName, "First name");
+    if (firstNameResult.errors.length > 0 && this.isSignUp) {
+      this.validationErrors.firstName = firstNameResult.errors;
+    }
+
+    const lastNameResult = validateOnlyText(this.lastName, "Last name");
+    if (lastNameResult.errors.length > 0 && this.isSignUp) {
+      this.validationErrors.lastName = lastNameResult.errors;
+    }
+
     return Object.keys(this.validationErrors).length === 0;
+  }
+
+  public async onSignIn2() {
+    if (!this.validateInputs()) return;
+
+    const payload = {
+      email: this.email,
+      password: this.password,
+    };
+
+    this.isLoading = true;
+
+    await this.signIn(payload);
+    // Only for testing
+    await new Promise((resolve) => setTimeout(resolve, 2000));
+
+    this.isLoading = false;
   }
 
   public async onSignIn() {
@@ -213,10 +262,13 @@ export default class AuthForm extends Mixins(ResponsiveMixin) {
 
     this.isLoading = true;
 
-    await this.signIn(payload);
-    await new Promise((resolve) => setTimeout(resolve, 2000));
+    const success = await this.signIn(payload);
 
     this.isLoading = false;
+
+    if (success) {
+      this.$router.push({ name: "home" });
+    }
   }
 
   public async onSignUp() {
@@ -225,15 +277,19 @@ export default class AuthForm extends Mixins(ResponsiveMixin) {
     const payload = {
       email: this.email,
       password: this.password,
-      confirmPassword: this.confirmPassword,
+      firstname: this.firstName,
+      lastname: this.lastName,
     };
 
     this.isLoading = true;
 
-    await this.signUp(payload);
-    await new Promise((resolve) => setTimeout(resolve, 2000));
+    const success = await this.signUp(payload);
 
     this.isLoading = false;
+
+    if (success) {
+      this.$router.push({ name: "signin" });
+    }
   }
 
   public signInWith(platform) {
@@ -309,11 +365,18 @@ export default class AuthForm extends Mixins(ResponsiveMixin) {
   }
 }
 
+.auth-form__input-group-names {
+  display: flex;
+  margin-bottom: 20px;
+  width: 80%;
+}
+
 .auth-form__input {
   padding: 10px;
   border: 1px solid #ccc;
   border-radius: 4px;
   font-size: 14px;
+  margin-right: 5px;
 }
 
 .auth-form__input-error {

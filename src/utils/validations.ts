@@ -1,4 +1,7 @@
-export function validateEmail(email: string): {
+export function validateEmail(
+  email: string,
+  key?: string
+): {
   valid: boolean;
   errors: string[];
 } {
@@ -6,19 +9,38 @@ export function validateEmail(email: string): {
   const errors: string[] = [];
 
   if (!email.match(emailPattern)) {
-    errors.push("Please enter a valid email address.");
+    errors.push(`${key}: Enter a valid email address.`);
   }
   return { valid: errors.length === 0, errors };
 }
 
-export function validatePassword(password: string): {
+export function validateOnlyText(
+  input: string,
+  key?: string
+): {
+  valid: boolean;
+  errors: string[];
+} {
+  const textPattern = /^[A-Za-z]+(?: [A-Za-z]+)*$/;
+  const errors: string[] = [];
+
+  if (!input.match(textPattern)) {
+    errors.push(`${key}: Only text allowed.`);
+  }
+  return { valid: errors.length === 0, errors };
+}
+
+export function validatePassword(
+  password: string,
+  key?: string
+): {
   valid: boolean;
   errors: string[];
 } {
   const errors: string[] = [];
 
   if (password.length < 8) {
-    errors.push("Password must be at least 8 characters long.");
+    errors.push(`${key}: Password must be at least 8 characters long.`);
   }
 
   // if (!/[A-Z]/.test(password)) {
@@ -37,12 +59,13 @@ export function validatePassword(password: string): {
 
 export function validateConfirmPassword(
   password: string,
-  confirmPassword: string
+  confirmPassword: string,
+  key?: string
 ): { valid: boolean; errors: string[] } {
   const errors: string[] = [];
 
   if (password !== confirmPassword) {
-    errors.push("Passwords do not match.");
+    errors.push(`${key}: Passwords do not match.`);
   }
 
   return { valid: errors.length === 0, errors };

@@ -14,45 +14,52 @@ const actions: ActionTree<State, RootState> = {
   async signIn({ commit }, payload) {
     try {
       const response = await AuthService.signIn<ReturnType<ActionsSignatures["signIn"]>, State["auth"]>(payload);
-      if (!response.data) throw Error("Response from server was empty");
-
-      // Assuming the token is directly inside response.data.payload
-      const token = response.data.payload.token;
-      const user = response.data.payload.user;
-
-      console.log('try signin response.data.payload', response.data.payload);
-      console.log('auth', user);
-      
-      if (token) {
-        // Set the cookie here.
-        Cookies.set('auth_token', token, { expires: 1, path: '/', secure: true, sameSite: 'strict' });
-        Cookies.set('auth_email', user.email , { expires: 1, path: '/', secure: true, sameSite: 'strict' });
-        commit(Mutations.SIGNIN, response.data.payload)
-        commit(Mutations.SET_AUTHENTICATED, true)
-      } else {
-        commit(Mutations.SET_ERROR, { error: Errors.SIGNIN_ERROR, message: "Email or password is incorrect" });
-        return "Token not found in the response"; // return error message
+      if (!response.data) {
+        commit(Mutations.SET_ERROR, { error: Errors.SIGNIN_ERROR, message: "Response from server was empty" });
+        return false;
       }
-    } catch (error) {
-      commit(Mutations.SET_ERROR, { error: Errors.SIGNIN_ERROR, message: "Something went wrong" });
-      return "Something went wrong, try again later.";
+  
+      const { token, user } = response.data.payload;
+  
+      if (token) {
+        Cookies.set('auth_token', token, { expires: 1, path: '/', secure: true, sameSite: 'strict' });
+        Cookies.set('auth_email', user.email, { expires: 1, path: '/', secure: true, sameSite: 'strict' });
+        commit(Mutations.SIGNIN, user);
+        commit(Mutations.SET_AUTHENTICATED, true);
+        return true;
+      } else {
+        commit(Mutations.SET_ERROR, { error: Errors.SIGNIN_ERROR, message: "Token not found in the response" });
+        return false;
+      }
+    } catch (error: any) {
+      commit(Mutations.SET_ERROR, { error: Errors.SIGNIN_ERROR, message: error.message || "Something went wrong" });
+      return false;
     }
   },
 
   async signUp({ commit }, payload) {
-    // try {
-    //   commit(Mutations.LOGIN, false);
-    //   return await SCBlendingService.downloadBlendRawCoalRelease<ReturnType<ActionsSignatures['downloadRawCoalRelease']>>();
-    // } catch (error) {
-    //   commit(Mutations.SET_ERROR, { name: Errors.BLENDING_DOWNLOAD_RAW_COAL_RELEASE_ERROR, error });
-    //   throw error;
-    // }
-    console.log("signUp action");
+    try {
+      const response = await AuthService.signUp<ReturnType<ActionsSignatures["signUp"]>, State["auth"]>(payload);
+      if (!response.data){
+        commit(Mutations.SET_ERROR, { error: Errors.SIGNUP_ERROR, message: "Response from server was empty" });
+      }
+      if (response.status === 201) {
+        return true;
+      }
+    } catch (error: any) {
+      commit(Mutations.SET_ERROR, { error: Errors.SIGNUP_ERROR, message: error.message || "Something went wrong" });
+      return false;
+    }
   },
 
   async signOut({ commit }) {
+    Cookies.remove('auth_token', { path: '/' });
+    Cookies.remove('auth_email', { path: '/' });
+
     commit(Mutations.SIGNIN, {})
     commit(Mutations.SET_AUTHENTICATED, false)
+    commit(Mutations.SET_TOKEN, "")
+    return true;
   },
 
   async authenticate({ commit }, payload) {

@@ -2,6 +2,7 @@ import Vue from "vue";
 import VueRouter, { RouteConfig } from "vue-router";
 import LandingPage from "@/views/LandingPage.vue";
 import NewJob from "@/views/NewJob.vue";
+import NewSwapper from "@/views/NewSwapper.vue";
 import Jobs from "@/views/Jobs.vue";
 import AuthForm from "@/components/Forms/AuthForm.vue";
 import Chat from "@/components/Chat/Chat.vue";
@@ -12,7 +13,7 @@ Vue.use(VueRouter);
 const routes: Array<RouteConfig> = [
   {
     path: "/",
-    name: "landingpage",
+    name: "home",
     component: LandingPage,
   },
   {
@@ -24,6 +25,11 @@ const routes: Array<RouteConfig> = [
     path: "/jobs",
     name: "jobs",
     component: Jobs,
+  },
+  {
+    path: "/newswapper",
+    name: "newswapper",
+    component: NewSwapper,
   },
   {
     path: "/signin",

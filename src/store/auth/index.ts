@@ -8,9 +8,15 @@ export { Mutations } from "./mutations/mutations.types";
 
 export type { ActionsSignatures } from "./actions/actions.types";
 
+const getters = {
+  isAuthenticated: (state) => state.authenticated,
+  // ... other getters
+};
+
 export default {
   namespaced: true,
   state,
   mutations,
   actions,
+  getters,
 };

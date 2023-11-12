@@ -30,7 +30,7 @@ export default Vue.extend({
 @import "styles.scss";
 
 .main-class {
-  margin-top: 80px; /* height of the TopBar */
+  margin-top: 110px; /* height of the TopBar */
   margin-bottom: 60px; /* height of the BottomBar */
   position: absolute;
   top: 0;

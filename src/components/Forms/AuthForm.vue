@@ -1,11 +1,10 @@
 <template>
-  <div :class="{ 'auth-form': true, 'auth-form--mobile': isMobile }">
-    <div class="auth-form__section">
-      <h2 class="auth-form__title">{{ componentMapping[component].title }}</h2>
-      <div class="auth-form__divider-line"></div>
-      <h2 class="auth-form__subtitle">Te damos la bienvenida a Swapp</h2>
-    </div>
-    <div class="auth-form__body">
+  <BaseForm
+    class="auth-form"
+    :title="componentMapping[component].title"
+    :subtitle="componentMapping[component].subtitle"
+  >
+    <template v-slot:content>
       <div class="auth-form__input-group">
         <input
           class="auth-form__input"
@@ -107,16 +106,16 @@
       ></v-progress-circular>
       <p class="auth-form__signup-prompt">
         {{ componentMapping[component].questionText }}
-        <a href="#" @click="navigateToPath(isSignUp ? '/signin' : '/signup')">{{
-          componentMapping[component].textButton
-        }}</a>
+        <a href="#" @click="navigateToPath(isSignUp ? '/signin' : '/signup')">
+          {{ componentMapping[component].textButton }}
+        </a>
       </p>
       <div class="auth-form__alternative-logins">
         <button @click="signInWith('Google')">Login with Google</button>
         <button @click="signInWith('Facebook')">Login with Facebook</button>
       </div>
-    </div>
-  </div>
+    </template>
+  </BaseForm>
 </template>
 
 <script lang="ts">
@@ -124,8 +123,7 @@ import { namespace } from "vuex-class";
 import { ActionsSignatures, State } from "@/store/auth";
 
 import { globalIcons } from "@/assets/icons/icons";
-import { Component, Mixins, Prop, Watch } from "vue-property-decorator";
-import ResponsiveMixin from "@/mixins/responsiveMixin";
+import { Component, Vue, Prop, Watch } from "vue-property-decorator";
 
 import {
   validateEmail,
@@ -134,6 +132,7 @@ import {
   validateOnlyText,
 } from "@/utils/validations";
 
+import BaseForm from "@/components/Base/BaseForm.vue";
 import BaseIcon from "@/components/Base/BaseIcon.vue";
 import BaseButton from "@/components/Base/BaseButton.vue";
 
@@ -141,11 +140,12 @@ const auth = namespace("auth");
 
 @Component({
   components: {
+    BaseForm,
     BaseButton,
     BaseIcon,
   },
 })
-export default class AuthForm extends Mixins(ResponsiveMixin) {
+export default class AuthForm extends Vue {
   @Prop({ required: true }) readonly component!: string;
 
   public isLoading = false;
@@ -156,11 +156,13 @@ export default class AuthForm extends Mixins(ResponsiveMixin) {
   public componentMapping = {
     SignIn: {
       title: "Iniciar Sesión",
+      subtitle: "Te damos la bienvenida a Swapp",
       questionText: "Don't have an account?",
       textButton: "Sign up",
     },
     SignUp: {
       title: "Registrarse",
+      subtitle: "Te damos la bienvenida a Swapp",
       questionText: "Already have an account?",
       textButton: "Sign in",
     },
@@ -235,23 +237,6 @@ export default class AuthForm extends Mixins(ResponsiveMixin) {
     return Object.keys(this.validationErrors).length === 0;
   }
 
-  public async onSignIn2() {
-    if (!this.validateInputs()) return;
-
-    const payload = {
-      email: this.email,
-      password: this.password,
-    };
-
-    this.isLoading = true;
-
-    await this.signIn(payload);
-    // Only for testing
-    await new Promise((resolve) => setTimeout(resolve, 2000));
-
-    this.isLoading = false;
-  }
-
   public async onSignIn() {
     if (!this.validateInputs()) return;
 
@@ -305,58 +290,6 @@ export default class AuthForm extends Mixins(ResponsiveMixin) {
 </script>
 
 <style lang="scss">
-.auth-form {
-  max-width: 568px;
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin: 0 auto;
-  margin-top: 32px !important;
-  margin-bottom: 32px !important;
-  border: 1px solid #b0b0b0 !important;
-  border-radius: 12px !important;
-  padding-bottom: 20px;
-}
-
-.auth-form__body {
-  width: 100%;
-  margin-left: auto;
-  margin-right: auto;
-}
-
-.auth-form__body * {
-  width: 80%;
-  margin-left: auto;
-  margin-right: auto;
-}
-
-.auth-form__section {
-  width: 100%;
-  margin-bottom: 20px;
-}
-
-.auth-form__title {
-  font-size: 16px;
-  color: #222222;
-  font-weight: 600;
-}
-
-.auth-form__subtitle {
-  font-size: 20px;
-  color: #222222;
-  font-weight: 600;
-  margin-top: 25px;
-  margin-left: 55px;
-  float: left;
-}
-
-.auth-form__divider-line {
-  flex-grow: 1;
-  height: 1px;
-  background-color: #ccc;
-}
-
 .auth-form__input-group {
   margin-bottom: 20px;
   width: 100%;
@@ -432,11 +365,5 @@ export default class AuthForm extends Mixins(ResponsiveMixin) {
   padding: 10px 10px;
   font-size: 14px;
   cursor: pointer;
-}
-
-/* MOBILE SPECIFIC */
-
-.auth-form--mobile {
-  border: none !important;
 }
 </style>

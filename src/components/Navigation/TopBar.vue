@@ -69,16 +69,20 @@
     <!-- Mobile version -->
     <div v-if="isMobile" class="top-bar top-bar--mobile">
       <div class="top-bar__logo">
-        <img src="@/assets/swapp-logo-only.png" alt="Swapp" />
+        <img
+          src="@/assets/swapp-logo-only.png"
+          alt="Swapp"
+          @click="navigateToPath('/')"
+        />
       </div>
-      <div class="top-bar__right-col">
+      <!-- <div class="top-bar__right-col">
         <BaseButton
           @click="navigateToPath('/post')"
           class="top-bar__menu-item--mobile"
           :text="'+'"
           :isCircle="true"
         />
-      </div>
+      </div> -->
     </div>
   </div>
 </template>
@@ -146,6 +150,7 @@ export default class TopBar extends Mixins(ResponsiveMixin) {
   height: 50px;
   margin-left: 37px;
   margin-top: 15px;
+  cursor: pointer;
 }
 
 .top-bar__search-input {
@@ -212,9 +217,6 @@ export default class TopBar extends Mixins(ResponsiveMixin) {
   margin-right: 10px;
 }
 
-.top-bar__account-icon {
-}
-
 /* MOBILE */
 
 .top-bar--mobile {
@@ -228,5 +230,12 @@ export default class TopBar extends Mixins(ResponsiveMixin) {
   left: 0;
   right: 0;
   z-index: 3;
+  justify-content: center;
+
+  .top-bar__logo img {
+    height: 60px !important;
+    margin-top: 10px;
+    margin-left: 0px;
+  }
 }
 </style>

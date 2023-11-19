@@ -70,3 +70,47 @@ export function validateConfirmPassword(
 
   return { valid: errors.length === 0, errors };
 }
+
+export function validateMinimumCaracters(
+  input: string,
+  number: number,
+  key?: string
+): {
+  valid: boolean;
+  errors: string[];
+} {
+  const errors: string[] = [];
+
+  if (input.length < number) {
+    errors.push(`${key}: Debe tener al menos ${number} caracteres.`);
+  }
+
+  return {
+    valid: errors.length === 0,
+    errors: errors,
+  };
+}
+
+export function validateNumberBetweenRange(
+  input: number,
+  min: number | string,
+  max: number | string,
+  key?: string
+): {
+  valid: boolean;
+  errors: string[];
+} {
+  const errors: string[] = [];
+
+  if (
+    input < Number(String(min).replace(/\D/g, "")) ||
+    input > Number(String(max).replace(/\D/g, ""))
+  ) {
+    errors.push(`${key}: Debe asignar un monto entre ${min} y ${max}.`);
+  }
+
+  return {
+    valid: errors.length === 0,
+    errors: errors,
+  };
+}

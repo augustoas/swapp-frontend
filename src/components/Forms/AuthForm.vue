@@ -3,12 +3,13 @@
     class="auth-form"
     :title="componentMapping[component].title"
     :subtitle="componentMapping[component].subtitle"
+    :validationErrors="validationErrors"
   >
     <template v-slot:content>
       <div class="auth-form__input-group">
         <input
           class="auth-form__input"
-          :class="{ 'auth-form__input-error': validationErrors.email }"
+          :class="{ 'base__input-error': validationErrors.email }"
           type="email"
           id="email"
           v-model="email"
@@ -18,7 +19,7 @@
       <div v-if="isSignUp" class="auth-form__input-group-names">
         <input
           class="auth-form__input"
-          :class="{ 'auth-form__input-error': validationErrors.firstName }"
+          :class="{ 'base__input-error': validationErrors.firstName }"
           type="text"
           id="first-name"
           v-model="firstName"
@@ -26,7 +27,7 @@
         />
         <input
           class="auth-form__input"
-          :class="{ 'auth-form__input-error': validationErrors.lastName }"
+          :class="{ 'base__input-error': validationErrors.lastName }"
           type="text"
           id="last-name"
           v-model="lastName"
@@ -36,13 +37,13 @@
       <div class="auth-form__input-group auth-form__input-group--password">
         <input
           class="auth-form__input"
-          :class="{ 'auth-form__input-error': validationErrors.password }"
+          :class="{ 'base__input-error': validationErrors.password }"
           id="password"
           v-model="password"
           placeholder="Password"
           :type="showPassword ? 'text' : 'password'"
         />
-        <div class="auth-form__password-icon" @click="togglePassword">
+        <div @click="togglePassword">
           <BaseIcon
             class="auth-form__toggle-password"
             :fill="true"
@@ -65,7 +66,7 @@
         <input
           class="auth-form__input"
           :class="{
-            'auth-form__input-error': validationErrors.confirmPassword,
+            'base__input-error': validationErrors.confirmPassword,
           }"
           id="confirm-password"
           v-model="confirmPassword"
@@ -75,18 +76,9 @@
       </div>
       <div
         v-if="!isLoading && error.message && !hasValidationErrors"
-        class="auth-form__error-message"
+        class="base__error-message"
       >
         {{ error.message }}.
-      </div>
-      <div v-for="(errorList, key) in validationErrors" :key="key">
-        <div
-          v-for="(error, index) in errorList"
-          :key="index"
-          class="auth-form__error-message"
-        >
-          {{ error }}
-        </div>
       </div>
       <div class="auth-form__forgot-password" v-if="!isSignUp">
         <a href="#">Forgot password?</a>
@@ -289,7 +281,7 @@ export default class AuthForm extends Vue {
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .auth-form__input-group {
   margin-bottom: 20px;
   width: 100%;
@@ -301,7 +293,7 @@ export default class AuthForm extends Vue {
 .auth-form__input-group-names {
   display: flex;
   margin-bottom: 20px;
-  width: 80%;
+  width: 100%;
 }
 
 .auth-form__input {
@@ -310,22 +302,13 @@ export default class AuthForm extends Vue {
   border-radius: 4px;
   font-size: 14px;
   margin-right: 5px;
-}
-
-.auth-form__input-error {
-  border: 1px solid red !important;
-}
-.auth-form__error-message {
-  color: red;
-  font-size: 12px;
-  margin-top: 5px;
-  text-align: left;
+  width: 100%;
 }
 
 .auth-form__toggle-password {
   position: absolute;
   top: 10px;
-  right: 65px;
+  right: 20px;
   width: 25px;
   cursor: pointer;
 }

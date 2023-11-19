@@ -1,5 +1,5 @@
 {
-  "name": "healthcare",
+  "name": "swap",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -10,15 +10,17 @@
   "dependencies": {
     "axios": "^1.5.0",
     "core-js": "^3.8.3",
+    "dayjs": "^1.11.10",
     "highcharts": "^10.3.2",
     "highcharts-vue": "^1.4.0",
     "js-cookie": "^3.0.5",
     "socket.io-client": "^4.7.2",
     "vue": "^2.6.14",
     "vue-class-component": "^7.2.3",
+    "vue-google-autocomplete": "^1.1.4",
     "vue-property-decorator": "^9.1.2",
     "vue-router": "^3.5.1",
-    "vuetify": "^2.6.12",
+    "vuetify": "^2.6.16",
     "vuex": "^3.6.2",
     "vuex-class": "^0.3.2"
   },

@@ -1,4 +1,4 @@
-# Swapp Frontend UI
+# Swap Frontend UI
 
 ## Project setup
 ```

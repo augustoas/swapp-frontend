@@ -14,4 +14,5 @@ export type ActionsSignatures = {
   signIn: (data: SignIn) => Promise<boolean>;
   signUp: (data: SignUp) => Promise<boolean>;
   signOut: () => Promise<boolean>;
+  resetError: () => Promise<void>;
 };

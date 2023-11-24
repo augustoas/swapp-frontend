@@ -170,7 +170,7 @@
           @click="previousStep"
         />
         <BaseButton
-          :text="'Continuar'"
+          :text="currentStep.index !== 3 ? 'Continuar' : 'Finalizar'"
           :minWidth="'150px'"
           @click="
             currentStep.index < steps.length - 1 ? nextStep() : createJob()
@@ -182,6 +182,12 @@
 </template>
 
 <script lang="ts">
+import { namespace } from "vuex-class";
+import { State } from "@/store/auth";
+
+import { Tabs } from "@/utils/consts";
+import { EventBus } from "@/utils/eventBus";
+
 import { Component, Mixins, Watch } from "vue-property-decorator";
 import VueGoogleAutocomplete from "vue-google-autocomplete";
 
@@ -189,14 +195,19 @@ import ResponsiveMixin from "@/mixins/responsiveMixin";
 import { globalIcons } from "@/assets/icons/icons";
 
 import {
-  validateMinimumCaracters,
-  validateNumberBetweenRange,
-} from "@/utils/validations";
+  validateDescription,
+  validateDate,
+  validateLocation,
+  validateDetails,
+  validateBudget,
+} from "./validations";
 
 import BaseForm from "@/components/Base/BaseForm.vue";
 import BaseButton from "@/components/Base/BaseButton.vue";
-import BaseIcon from "../Base/BaseIcon.vue";
+import BaseIcon from "../../Base/BaseIcon.vue";
 import BaseDatePicker from "@/components/Base/BaseDatePicker.vue";
+
+const auth = namespace("auth");
 
 @Component({
   components: {
@@ -209,8 +220,9 @@ import BaseDatePicker from "@/components/Base/BaseDatePicker.vue";
 })
 export default class NewJobForm extends Mixins(ResponsiveMixin) {
   public globalIcons = globalIcons;
+  public tabs = Tabs;
 
-  public validationErrors: Record<string, string[]> = {};
+  public validationErrors: Record<string, string[] | boolean> = {};
   public clickedDisabled = false;
 
   public datesOption = {
@@ -246,7 +258,7 @@ export default class NewJobForm extends Mixins(ResponsiveMixin) {
       index: 3,
     },
   ];
-  public currentStep = this.steps[3];
+  public currentStep = this.steps[0];
   public activeElement = {
     date: null,
   };
@@ -254,7 +266,6 @@ export default class NewJobForm extends Mixins(ResponsiveMixin) {
   public description = "";
   public taskDate = null;
   public taskBeforeDate = null;
-  public taskBeforeDateBool = false;
   public flexible = false;
   public location = "";
   public online = false;
@@ -262,58 +273,46 @@ export default class NewJobForm extends Mixins(ResponsiveMixin) {
   public rawBudget = null;
   public formattedBudget = null;
 
+  @auth.State("authenticated")
+  public authenticated!: State["authenticated"];
+
+  @auth.Action("jobInProgress")
+  public jobInProgress!: State["jobInProgress"];
+
   public validateInputs(): boolean {
     this.validationErrors = {};
 
     // Validations for STEP 1
     if (this.currentStep.index === 0) {
-      const descriptionResult = validateMinimumCaracters(
-        this.description,
-        10,
-        "Descripción"
+      this.validationErrors.description = validateDescription(this.description);
+      this.validationErrors.date = validateDate(
+        this.flexible,
+        this.taskDate,
+        this.taskBeforeDate
       );
-      if (descriptionResult.errors.length > 0) {
-        this.validationErrors.description = descriptionResult.errors;
-      }
-
-      if (!this.flexible && !this.taskDate && !this.taskBeforeDate) {
-        this.validationErrors.date = ["Debe elegir una opción de fecha."];
-      }
     }
 
     // Validations for STEP 2
     if (this.currentStep.index === 1) {
-      if (this.location === "" && !this.online) {
-        this.validationErrors.location = ["Debe indicar dirección válida"];
-      }
+      this.validationErrors.location = validateLocation(
+        this.online,
+        this.location
+      );
     }
 
     // Validations for STEP 3
     if (this.currentStep.index === 2) {
-      const detailsResult = validateMinimumCaracters(
-        this.details,
-        25,
-        "Detalles"
-      );
-      if (detailsResult.errors.length > 0) {
-        this.validationErrors.details = detailsResult.errors;
-      }
+      this.validationErrors.details = validateDetails(this.details);
     }
 
     // Validations for STEP 4
     if (this.currentStep.index === 3) {
-      const budgetResult = validateNumberBetweenRange(
-        this.rawBudget,
-        1,
-        "999.999",
-        "Monto"
-      );
-      if (budgetResult.errors.length > 0) {
-        this.validationErrors.budget = budgetResult.errors;
-      }
+      this.validationErrors.budget = validateBudget(this.rawBudget);
     }
 
-    return Object.keys(this.validationErrors).length === 0;
+    return Object.values(this.validationErrors).every(
+      (value) => value === false || (Array.isArray(value) && value.length === 0)
+    );
   }
 
   public nextStep() {
@@ -330,7 +329,6 @@ export default class NewJobForm extends Mixins(ResponsiveMixin) {
   public setActiveDateOption(element) {
     this.activeElement.date = element;
     this.flexible = element === this.datesOption.FLEXIBLE;
-    this.taskBeforeDateBool = element === this.datesOption.BEFORE_DATE;
 
     this.taskDate =
       element === this.datesOption.BEFORE_DATE ? null : this.taskDate;
@@ -350,16 +348,34 @@ export default class NewJobForm extends Mixins(ResponsiveMixin) {
     let numericValue = value.replace(/\D/g, "");
     let formattedValue = numericValue.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
 
-    // Update the formattedBudget with the formatted value
     this.formattedBudget = formattedValue;
-
-    // Update the rawBudget with the raw numeric value
     this.rawBudget = numericValue;
   }
 
   public createJob() {
     if (!this.validateInputs()) return;
-    console.log("create job ...");
+    const payload = {
+      description: this.description,
+      taskDate: this.taskDate,
+      taskBeforeDate: this.taskBeforeDate,
+      flexible: this.flexible,
+      location: this.location,
+      online: this.online,
+      details: this.details,
+      budget: this.rawBudget,
+    };
+
+    if (!this.authenticated) {
+      console.log(
+        "first sign in / sign up... storing payload on the localStorage"
+      );
+      localStorage.setItem("jobInProgress", JSON.stringify(payload));
+      this.jobInProgress(payload);
+      EventBus.$emit("updateCurrentTab", this.tabs.SIGN_IN);
+      this.$router.push("/signin");
+    } else {
+      console.log("creating job ...", payload); // CREATE JOB ACTION
+    }
   }
 
   @Watch("currentStep")

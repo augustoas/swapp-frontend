@@ -1,7 +1,3 @@
-import { AxiosError } from "axios";
-
-// import { InputData as ProductBlendRulesInputData } from '@/components/DailyPlanning/QualityInputs/ProductBlendRules';
-
 export enum Errors {
   SIGNIN_ERROR = "signInError",
   SIGNUP_ERROR = "signUpError",
@@ -30,5 +26,6 @@ export type Error = {
 export type State = {
   auth: IAuth;
   authenticated: boolean;
+  jobInProgress: any; // UPDATE WITH CORRESPONDING JOB TYPE.
   error: Error;
 };

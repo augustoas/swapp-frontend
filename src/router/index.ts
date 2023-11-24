@@ -2,10 +2,10 @@ import Vue from "vue";
 import VueRouter, { RouteConfig } from "vue-router";
 import store from "@/store"; // Adjust the path to where your store is exported
 import LandingPage from "@/views/LandingPage.vue";
-import NewJobFrom from "@/components/Forms/NewJobForm.vue";
-import NewSwapper from "@/views/NewSwapper.vue";
+import NewJobFrom from "@/components/Forms/NewJobForm/NewJobForm.vue";
+import NewSwaper from "@/views/NewSwaper.vue";
 import Jobs from "@/views/Jobs.vue";
-import AuthForm from "@/components/Forms/AuthForm.vue";
+import AuthForm from "@/components/Forms/AuthForm/AuthForm.vue";
 import Chat from "@/components/Chat/Chat.vue";
 import Profile from "@/views/Profile.vue";
 
@@ -28,9 +28,9 @@ const routes: Array<RouteConfig> = [
     component: Jobs,
   },
   {
-    path: "/newswapper",
-    name: "newswapper",
-    component: NewSwapper,
+    path: "/newswaper",
+    name: "newswaper",
+    component: NewSwaper,
   },
   {
     path: "/signin",

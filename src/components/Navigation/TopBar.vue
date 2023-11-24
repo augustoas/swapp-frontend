@@ -2,19 +2,25 @@
   <div>
     <!-- Desktop version -->
     <div v-if="!isMobile" class="top-bar top-bar--desktop">
-      <div class="top-bar__logo" @click="navigateToPath('/')">
-        <img src="@/assets/swapp-logo-brand.png" alt="Swapp" />
+      <div class="top-bar__logo" @click="navigateToPath('/', tabs.HOME)">
+        <img src="@/assets/swapp-logo-brand.png" alt="Swap" />
       </div>
       <div class="top-bar__center-col">
         <BaseButton
           class="top-bar__menu-item"
           :text="'Post a Task'"
-          @click="navigateToPath('/post')"
+          @click="navigateToPath('/post', tabs.NEW_JOB)"
         />
-        <span class="top-bar__menu-item" @click="navigateToPath('/jobs')">
+        <span
+          class="top-bar__menu-item"
+          @click="navigateToPath('/jobs', tabs.JOBS)"
+        >
           Browse tasks
         </span>
-        <span class="top-bar__menu-item" @click="navigateToPath('/')">
+        <span
+          class="top-bar__menu-item"
+          @click="navigateToPath('/', tabs.HOME)"
+        >
           How it works
         </span>
       </div>
@@ -43,7 +49,7 @@
           </template>
 
           <v-list>
-            <v-list-item @click="navigateToPath('/profile')">
+            <v-list-item @click="navigateToPath('/profile', tabs.PROFILE)">
               <v-list-item-title>My Profile</v-list-item-title>
             </v-list-item>
             <v-list-item @click="onSignOut">
@@ -53,16 +59,22 @@
         </v-menu>
       </div>
       <div class="top-bar__right-col" v-else>
-        <span class="top-bar__menu-item" @click="navigateToPath('/signup')">
+        <span
+          class="top-bar__menu-item"
+          @click="navigateToPath('/signup', tabs.SIGN_UP)"
+        >
           Sign up
         </span>
-        <span class="top-bar__menu-item" @click="navigateToPath('/signin')">
+        <span
+          class="top-bar__menu-item"
+          @click="navigateToPath('/signin', tabs.SIGN_IN)"
+        >
           Log in
         </span>
         <BaseButton
-          :text="'Become a Swapper'"
+          :text="'Become a Swaper'"
           :secondary="true"
-          @click="navigateToPath('/newswapper')"
+          @click="navigateToPath('/newswaper')"
         />
       </div>
     </div>
@@ -71,26 +83,21 @@
       <div class="top-bar__logo">
         <img
           src="@/assets/swapp-logo-only.png"
-          alt="Swapp"
-          @click="navigateToPath('/')"
+          alt="Swap"
+          @click="navigateToPath('/', Tabs.HOME)"
         />
       </div>
-      <!-- <div class="top-bar__right-col">
-        <BaseButton
-          @click="navigateToPath('/post')"
-          class="top-bar__menu-item--mobile"
-          :text="'+'"
-          :isCircle="true"
-        />
-      </div> -->
     </div>
   </div>
 </template>
 
 <script lang="ts">
+import { namespace } from "vuex-class";
+import { Tabs } from "@/utils/consts";
+import { EventBus } from "@/utils/eventBus";
+
 import { ActionsSignatures, State } from "@/store/auth";
 import { Component, Mixins } from "vue-property-decorator";
-import { namespace } from "vuex-class";
 
 import { navigationIcons } from "@/assets/icons/icons";
 
@@ -115,12 +122,14 @@ export default class TopBar extends Mixins(ResponsiveMixin) {
   public signOut!: ActionsSignatures["signOut"];
 
   public navigationIcons = navigationIcons;
+  public tabs = Tabs;
 
   public isModalVisible = false;
 
-  public navigateToPath(path) {
+  public navigateToPath(path, tab) {
     if (this.$route.path !== path) {
       this.$router.push(path);
+      EventBus.$emit("updateCurrentTab", tab);
     }
   }
 

@@ -106,7 +106,7 @@ export function validateNumberBetweenRange(
     input < Number(String(min).replace(/\D/g, "")) ||
     input > Number(String(max).replace(/\D/g, ""))
   ) {
-    errors.push(`${key}: Debe asignar un monto entre ${min} y ${max}.`);
+    errors.push(`${key}: Debe asignar un valor entre ${min} y ${max}.`);
   }
 
   return {

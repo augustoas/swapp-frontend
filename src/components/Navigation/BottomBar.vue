@@ -22,6 +22,7 @@
 
 <script lang="ts">
 import { namespace } from "vuex-class";
+import { EventBus } from "@/utils/eventBus";
 import { State } from "@/store/auth";
 
 import { Component, Mixins } from "vue-property-decorator";
@@ -96,6 +97,11 @@ export default class BottomBar extends Mixins(ResponsiveMixin) {
     if (storedSelectedItem !== null) {
       this.selectedItem = parseInt(storedSelectedItem);
     }
+    EventBus.$on("updateCurrentTab", (tab) => {
+      // Handle the event and data
+      console.log("updateCurrentTab tab", tab);
+      this.selectItem(tab);
+    });
   }
 
   getFilled(index: number) {

@@ -1,7 +1,7 @@
 <template>
   <v-navigation-drawer app permanent class="side-nav" width="256">
     <div class="side-nav__logo-nav">
-      <img src="@/assets/logo-image.png" alt="Swapp" />
+      <img src="@/assets/logo-image.png" alt="Swap" />
     </div>
     <v-list flat>
       <v-subheader class="side-nav__subtitle">MEDICINE</v-subheader>

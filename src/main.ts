@@ -11,9 +11,16 @@ Vue.use(HighchartsVue);
 
 const token = Cookies.get("auth_token");
 const user = JSON.parse(localStorage.getItem("auth_user"));
+const jobInProgress = JSON.parse(localStorage.getItem("jobInProgress"));
+
+console.log("MAIN");
 
 if (token) {
   store.dispatch("auth/authenticate", { token, user });
+}
+
+if (jobInProgress) {
+  store.dispatch("auth/jobInProgress", jobInProgress);
 }
 
 // Dynamically load the Google Maps script

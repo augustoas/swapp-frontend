@@ -32,7 +32,7 @@ const actions: ActionTree<State, RootState> = {
         return false;
       }
     } catch (error: any) {
-      commit(Mutations.SET_ERROR, { error: Errors.SIGNIN_ERROR, message: error.message || "Something went wrong" });
+      commit(Mutations.SET_ERROR, { error: Errors.SIGNIN_ERROR, message: "Wrong email or password, please try again." });
       return false;
     }
   },
@@ -68,6 +68,18 @@ const actions: ActionTree<State, RootState> = {
       commit(Mutations.SIGNIN, payload);
       commit(Mutations.SET_AUTHENTICATED, true);
     }
+  },
+
+  async jobInProgress({ commit }, payload) {
+    const jobInProgress = payload;
+
+    if (jobInProgress) {
+      commit(Mutations.SET_JOB_IN_PROGRESS, jobInProgress);
+    }
+  },
+
+  async resetError({ commit }) {
+    commit(Mutations.SET_ERROR, {});
   }
 };
 

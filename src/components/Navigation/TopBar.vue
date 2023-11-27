@@ -84,7 +84,9 @@
         <img
           src="@/assets/swapp-logo-only.png"
           alt="Swap"
-          @click="navigateToPath('/', Tabs.HOME)"
+          width="50"
+          height="50"
+          @click="navigateToPath('/', tabs.HOME)"
         />
       </div>
     </div>

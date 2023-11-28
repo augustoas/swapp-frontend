@@ -8,20 +8,20 @@
       <div class="top-bar__center-col">
         <BaseButton
           class="top-bar__menu-item"
-          :text="'Post a Task'"
+          :text="topBarMessages.postTask"
           @click="navigateToPath('/post', tabs.NEW_JOB)"
         />
         <span
           class="top-bar__menu-item"
           @click="navigateToPath('/jobs', tabs.JOBS)"
         >
-          Browse tasks
+          {{ topBarMessages.browseTasks }}
         </span>
         <span
           class="top-bar__menu-item"
           @click="navigateToPath('/', tabs.HOME)"
         >
-          How it works
+          {{ topBarMessages.howItWorks }}
         </span>
       </div>
       <div class="top-bar__right-col" v-if="authenticated">
@@ -50,10 +50,12 @@
 
           <v-list>
             <v-list-item @click="navigateToPath('/profile', tabs.PROFILE)">
-              <v-list-item-title>My Profile</v-list-item-title>
+              <v-list-item-title>
+                {{ topBarMessages.myProfile }}
+              </v-list-item-title>
             </v-list-item>
             <v-list-item @click="onSignOut">
-              <v-list-item-title>Log Out</v-list-item-title>
+              <v-list-item-title>{{ topBarMessages.logOut }}</v-list-item-title>
             </v-list-item>
           </v-list>
         </v-menu>
@@ -63,16 +65,16 @@
           class="top-bar__menu-item"
           @click="navigateToPath('/signup', tabs.SIGN_UP)"
         >
-          Sign up
+          {{ topBarMessages.signUp }}
         </span>
         <span
           class="top-bar__menu-item"
           @click="navigateToPath('/signin', tabs.SIGN_IN)"
         >
-          Log in
+          {{ topBarMessages.logIn }}
         </span>
         <BaseButton
-          :text="'Become a Swaper'"
+          :text="topBarMessages.becomeASwaper"
           :secondary="true"
           @click="navigateToPath('/newswaper')"
         />
@@ -127,6 +129,10 @@ export default class TopBar extends Mixins(ResponsiveMixin) {
   public tabs = Tabs;
 
   public isModalVisible = false;
+
+  get topBarMessages() {
+    return this.$i18n.messages[this.$i18n.locale].topBar || {};
+  }
 
   public navigateToPath(path, tab) {
     if (this.$route.path !== path) {

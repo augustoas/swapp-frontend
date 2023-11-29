@@ -15,7 +15,12 @@ export function loadLocaleMessages(locale: string): Promise<any> {
   return import(`@/locales/${locale}/index`).then((module) => module.default);
 }
 
-export const userLocale = getSupportedLocale(navigator.language);
+export function updateLangAttribute(lang) {
+  document.documentElement.lang = lang;
+}
+
+// export const userLocale = getSupportedLocale(navigator.language);
+export const userLocale = "en";
 
 export const i18n = new VueI18n({
   locale: userLocale,

@@ -6,7 +6,12 @@ import router from "./router";
 import store from "./store";
 import vuetify from "./plugins/vuetify";
 import Cookies from "js-cookie";
-import { i18n, loadLocaleMessages, userLocale } from "./i18n"; // Import from i18n.ts
+import {
+  i18n,
+  loadLocaleMessages,
+  userLocale,
+  updateLangAttribute,
+} from "./i18n"; // Import from i18n.ts
 
 Vue.config.productionTip = false;
 Vue.use(HighchartsVue);
@@ -26,6 +31,7 @@ if (jobInProgress) {
 loadLocaleMessages(userLocale).then((messages) => {
   // Initialize VueI18n
   i18n.setLocaleMessage(userLocale, messages);
+  updateLangAttribute(userLocale);
 
   // Dynamically load the Google Maps script
   const googleMapsScript = document.createElement("script");

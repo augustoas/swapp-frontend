@@ -8,6 +8,7 @@
     >
       <template v-slot:content>
         <div class="auth-form__input-group">
+          <label for="email" class="visually-hidden">Email</label>
           <input
             class="auth-form__input"
             :class="{ 'base__input-error': validationErrors.email }"
@@ -15,9 +16,12 @@
             id="email"
             v-model="email"
             placeholder="Email"
+            aria-label="email-input"
+            :aria-describedby="validationErrors.email ? 'email-error' : null"
           />
         </div>
         <div v-if="isSignUp" class="auth-form__input-group-names">
+          <label for="first-name" class="visually-hidden">First Name</label>
           <input
             class="auth-form__input"
             :class="{ 'base__input-error': validationErrors.firstName }"
@@ -25,7 +29,9 @@
             id="first-name"
             v-model="firstName"
             placeholder="First name"
+            aria-label="first-name-input"
           />
+          <label for="last-name" class="visually-hidden">Last Name</label>
           <input
             class="auth-form__input"
             :class="{ 'base__input-error': validationErrors.lastName }"
@@ -33,9 +39,11 @@
             id="last-name"
             v-model="lastName"
             placeholder="Last name"
+            aria-label="last-name-input"
           />
         </div>
         <div class="auth-form__input-group auth-form__input-group--password">
+          <label for="password" class="visually-hidden">Password</label>
           <input
             class="auth-form__input"
             :class="{ 'base__input-error': validationErrors.password }"
@@ -43,10 +51,12 @@
             v-model="password"
             placeholder="Password"
             :type="showPassword ? 'text' : 'password'"
+            aria-label="password-input"
           />
           <div @click="togglePassword">
             <BaseIcon
               class="auth-form__toggle-password"
+              alt="toggle-password"
               :fill="true"
               :icon="
                 showPassword
@@ -64,6 +74,9 @@
           v-if="isSignUp"
           class="auth-form__input-group auth-form__input-group--password"
         >
+          <label for="confirm-password" class="visually-hidden">
+            Confirm Password
+          </label>
           <input
             class="auth-form__input"
             :class="{
@@ -73,6 +86,7 @@
             v-model="confirmPassword"
             placeholder="Confirm password"
             type="password"
+            aria-label="confirm-password-input"
           />
         </div>
         <div
@@ -82,7 +96,7 @@
           {{ error.message }}.
         </div>
         <div class="auth-form__forgot-password" v-if="!isSignUp">
-          <a href="#">Forgot password?</a>
+          <a class="auth-form__link-to" href="#">Forgot password?</a>
         </div>
         <BaseButton
           v-if="!isLoading"
@@ -99,7 +113,11 @@
         ></v-progress-circular>
         <p class="auth-form__signup-prompt">
           {{ componentMapping[component].questionText }}
-          <a href="#" @click="navigateToPath(isSignUp ? '/signin' : '/signup')">
+          <a
+            class="auth-form__link-to"
+            href="#"
+            @click="navigateToPath(isSignUp ? '/signin' : '/signup')"
+          >
             {{ componentMapping[component].textButton }}
           </a>
         </p>
@@ -402,6 +420,11 @@ export default class AuthForm extends Vue {
 .auth-form__signup-prompt {
   font-size: 14px;
   margin-bottom: 20px;
+}
+
+.auth-form__link-to {
+  color: var(--purple);
+  font-weight: 500;
 }
 
 .auth-form__alternative-logins button {

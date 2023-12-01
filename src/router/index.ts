@@ -1,6 +1,7 @@
 import Vue from "vue";
 import VueRouter, { RouteConfig } from "vue-router";
 import store from "@/store"; // Adjust the path to where your store is exported
+import NotFoundComponent from "./NotFoundComponent.vue";
 import LandingPage from "@/views/LandingPage.vue";
 import NewJobFrom from "@/components/Forms/NewJobForm/NewJobForm.vue";
 import NewSwaper from "@/views/NewSwaper.vue";
@@ -35,6 +36,7 @@ const routes: Array<RouteConfig> = [
   {
     path: "/signin",
     name: "signin",
+    alias: "/login",
     component: AuthForm,
     meta: { requiresGuest: true },
     props: { component: "SignIn" },
@@ -50,11 +52,16 @@ const routes: Array<RouteConfig> = [
     path: "/profile",
     name: "profile",
     component: Profile,
+    meta: { requiresAuth: true },
   },
   {
     path: "/chat",
     name: "chat",
     component: Chat,
+  },
+  {
+    path: "*",
+    component: NotFoundComponent,
   },
 ];
 
@@ -67,6 +74,7 @@ router.beforeEach((to, from, next) => {
   const isAuthenticated = store.getters["auth/isAuthenticated"];
 
   const requiresGuest = to.matched.some((record) => record.meta.requiresGuest);
+  const requiresAuth = to.matched.some((record) => record.meta.requiresAuth);
 
   if (isAuthenticated && requiresGuest) {
     next({ name: "home" });
@@ -78,6 +86,10 @@ router.beforeEach((to, from, next) => {
   } else {
     next();
   }
-});
+
+  if (!isAuthenticated && requiresAuth) {
+    next({ name: "signin", query: { redirect: to.fullPath } });
+  }
+}); // router.beforeResolve, and router.afterEach
 
 export default router;

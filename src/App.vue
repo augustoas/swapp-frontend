@@ -1,6 +1,6 @@
 <template>
   <v-app id="app">
-    <div>
+    <div class="app-container">
       <TopBar />
       <v-main class="main-class">
         <router-view />
@@ -39,5 +39,14 @@ export default Vue.extend({
   bottom: 0;
   overflow-y: scroll;
   overflow-x: hidden;
+
+  // Hide scrollbar if it's not needed
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+.app-container {
+  background-color: rebeccapurple;
 }
 </style>

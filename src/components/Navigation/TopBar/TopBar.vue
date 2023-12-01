@@ -151,7 +151,7 @@ export default class TopBar extends Mixins(ResponsiveMixin) {
 /* Common styles for both versions */
 .top-bar {
   height: 80px;
-  background-color: white;
+  background-color: #fff;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -160,6 +160,7 @@ export default class TopBar extends Mixins(ResponsiveMixin) {
   left: 0;
   right: 0;
   z-index: 3;
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.1);
 }
 
 .top-bar__logo img {

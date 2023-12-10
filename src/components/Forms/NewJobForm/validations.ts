@@ -3,6 +3,10 @@ import {
   validateNumberBetweenRange,
 } from "@/utils/validations";
 
+interface Location {
+  [key: string]: unknown;
+}
+
 export const validateDescription = (description: string) => {
   const descriptionResult = validateMinimumCaracters(
     description,
@@ -18,12 +22,8 @@ export const validateDescription = (description: string) => {
   return false;
 };
 
-export const validateDate = (
-  flexible: boolean,
-  taskDate: boolean,
-  taskBeforeDate: boolean
-) => {
-  if (!flexible && !taskDate && !taskBeforeDate) {
+export const validateDate = (dateType: number | null, date: string) => {
+  if (!date && dateType !== 3) {
     const errorMessage = ["Debe elegir una opción de fecha."];
     return errorMessage;
   }
@@ -31,8 +31,8 @@ export const validateDate = (
   return false;
 };
 
-export const validateLocation = (online: boolean, location: string) => {
-  if (location === "" && !online) {
+export const validateLocation = (remote: boolean, location: Location) => {
+  if (!location && !remote) {
     const errorMessage = ["Debe indicar dirección válida."];
     return errorMessage;
   }

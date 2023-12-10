@@ -162,10 +162,10 @@ import {
   validateOnlyText,
 } from "@/utils/validations";
 
-import BaseForm from "@/components/Base/BaseForm.vue";
-import BaseIcon from "@/components/Base/BaseIcon.vue";
-import BaseButton from "@/components/Base/BaseButton.vue";
-import BaseModal from "@/components/Base/BaseModal.vue";
+const BaseForm = () => import("@/components/Base/BaseForm.vue");
+const BaseIcon = () => import("@/components/Base/BaseIcon.vue");
+const BaseButton = () => import("@/components/Base/BaseButton.vue");
+const BaseModal = () => import("@/components/Base/BaseModal.vue");
 
 const auth = namespace("auth");
 

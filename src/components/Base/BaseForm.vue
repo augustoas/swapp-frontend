@@ -5,7 +5,7 @@
   >
     <div class="base-form__section">
       <h2 class="base-form__title">{{ title }}</h2>
-      <div class="base-form__divider-line"></div>
+      <div v-if="title" class="base-form__divider-line"></div>
       <h2 class="base-form__subtitle">{{ subtitle }}</h2>
     </div>
     <div class="base-form__body">

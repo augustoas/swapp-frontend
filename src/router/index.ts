@@ -1,14 +1,6 @@
 import Vue from "vue";
 import VueRouter, { RouteConfig } from "vue-router";
 import store from "@/store"; // Adjust the path to where your store is exported
-import NotFoundComponent from "./NotFoundComponent.vue";
-import LandingPage from "@/views/LandingPage.vue";
-import NewJobFrom from "@/components/Forms/NewJobForm/NewJobForm.vue";
-import NewSwaper from "@/views/NewSwaper.vue";
-import Jobs from "@/views/Jobs.vue";
-import AuthForm from "@/components/Forms/AuthForm/AuthForm.vue";
-import Chat from "@/components/Chat/Chat.vue";
-import Profile from "@/views/Profile.vue";
 
 Vue.use(VueRouter);
 
@@ -16,52 +8,52 @@ const routes: Array<RouteConfig> = [
   {
     path: "/",
     name: "home",
-    component: LandingPage,
+    component: () => import("@/views/LandingPage.vue"),
   },
   {
     path: "/post",
     name: "post",
-    component: NewJobFrom,
+    component: () => import("@/components/Forms/NewJobForm/NewJobForm.vue"),
   },
   {
     path: "/jobs",
     name: "jobs",
-    component: Jobs,
+    component: () => import("@/views/Jobs.vue"),
   },
   {
     path: "/newswaper",
     name: "newswaper",
-    component: NewSwaper,
+    component: () => import("@/views/NewSwaper.vue"),
   },
   {
     path: "/signin",
     name: "signin",
     alias: "/login",
-    component: AuthForm,
+    component: () => import("@/components/Forms/AuthForm/AuthForm.vue"),
     meta: { requiresGuest: true },
     props: { component: "SignIn" },
   },
   {
     path: "/signup",
     name: "signup",
-    component: AuthForm,
+    component: () => import("@/components/Forms/AuthForm/AuthForm.vue"),
     meta: { requiresGuest: true },
     props: { component: "SignUp" },
   },
   {
     path: "/profile",
     name: "profile",
-    component: Profile,
+    component: () => import("@/views/Profile.vue"),
     meta: { requiresAuth: true },
   },
   {
     path: "/chat",
     name: "chat",
-    component: Chat,
+    component: () => import("@/components/Chat/Chat.vue"),
   },
   {
     path: "*",
-    component: NotFoundComponent,
+    component: () => import("./NotFoundComponent.vue"),
   },
 ];
 

@@ -29,9 +29,10 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from "vue-property-decorator";
-import BaseIcon from "../Base/BaseIcon.vue";
 
 import { globalIcons } from "@/assets/icons/icons";
+
+const BaseIcon = () => import("@/components/Base/BaseIcon.vue");
 
 @Component({
   components: {

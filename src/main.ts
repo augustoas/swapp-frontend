@@ -11,7 +11,7 @@ import {
   loadLocaleMessages,
   userLocale,
   updateLangAttribute,
-} from "./i18n"; // Import from i18n.ts
+} from "./i18n";
 
 Vue.config.productionTip = false;
 Vue.use(HighchartsVue);
@@ -28,26 +28,20 @@ if (jobInProgress) {
   store.dispatch("auth/jobInProgress", jobInProgress);
 }
 
-loadLocaleMessages(userLocale).then((messages) => {
-  // Initialize VueI18n
-  i18n.setLocaleMessage(userLocale, messages);
-  updateLangAttribute(userLocale);
-
-  // Dynamically load the Google Maps script
-  const googleMapsScript = document.createElement("script");
-  googleMapsScript.src = `https://maps.googleapis.com/maps/api/js?key=${process.env.VUE_APP_GOOGLE_MAPS_API_KEY}&libraries=places&language=${userLocale}`;
-  googleMapsScript.async = true;
-  googleMapsScript.defer = true;
-  document.head.appendChild(googleMapsScript);
-
-  googleMapsScript.addEventListener("load", () => {
-    // Initialize Vue app after Google Maps script is loaded
+loadLocaleMessages(userLocale)
+  .then((messages) => {
+    i18n.setLocaleMessage(userLocale, messages);
+    updateLangAttribute(userLocale);
+  })
+  .then(() => {
     new Vue({
       router,
       store,
       vuetify,
-      i18n, // Add i18n to Vue instance
+      i18n,
       render: (h) => h(App),
     }).$mount("#app");
+  })
+  .catch((error) => {
+    console.error("An error occurred:", error);
   });
-});

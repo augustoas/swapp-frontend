@@ -11,7 +11,6 @@
       </span>
     </div>
     <BaseForm
-      :title="title"
       :subtitle="currentStep.subtitle"
       :maxWidth="'650px'"
       :validationErrors="validationErrors"
@@ -40,28 +39,32 @@
                 class="new-job-step-1__date-input"
                 v-model="taskDate"
                 :text="'El día '"
-                :secondary="isNotSelected(datesOption.ON_DATE, (key = 'date'))"
-                @click.native="setActiveDateOption(datesOption.ON_DATE)"
+                :secondary="
+                  activeDatePicker !== datesOption.ON_DATE || taskDate === null
+                "
+                :show="activeDatePicker === datesOption.ON_DATE"
+                @click.native="setDate(datesOption.ON_DATE)"
               />
               <BaseDatePicker
                 class="new-job-step-1__date-input"
                 v-model="taskBeforeDate"
                 :text="'Antes del '"
                 :secondary="
-                  isNotSelected(datesOption.BEFORE_DATE, (key = 'date'))
+                  activeDatePicker !== datesOption.BEFORE_DATE ||
+                  taskBeforeDate === null
                 "
-                @click.native="setActiveDateOption(datesOption.BEFORE_DATE)"
+                :show="activeDatePicker === datesOption.BEFORE_DATE"
+                @click.native="setDate(datesOption.BEFORE_DATE)"
               />
               <BaseButton
                 class="new-job-step-1__date-input"
-                v-model="flexible"
                 :text="'Fecha flexible'"
-                :secondary="isNotSelected(datesOption.FLEXIBLE, (key = 'date'))"
-                @click.native="setActiveDateOption(datesOption.FLEXIBLE)"
+                :secondary="activeDatePicker !== datesOption.FLEXIBLE"
+                @click.native="setDate(datesOption.FLEXIBLE)"
               />
             </div>
             <div
-              v-if="activeElement === datesOption.FLEXIBLE"
+              v-if="activeDatePicker === datesOption.FLEXIBLE"
               class="new-job__input-tooltip"
             >
               *** Flexible: la fecha se acordará con el trabajador
@@ -74,22 +77,22 @@
             <BaseButton
               class="new-job-step-2__location-button"
               :text="'En Persona'"
-              :secondary="online"
+              :secondary="remote"
               :minWidth="'150px'"
-              @click="online = false"
+              @click="remote = false"
             />
             <BaseButton
               class="new-job-step-2__location-button"
-              :text="'Online'"
-              :secondary="!online"
+              :text="'Remoto'"
+              :secondary="!remote"
               :minWidth="'150px'"
-              @click="online = true"
+              @click="remote = true"
             />
           </div>
           <span class="new-job__input-tooltip">
-            Selecciona Online si se puede realizar el trabajo de manera remota.
+            Selecciona Remoto si se puede realizar el trabajo de manera remota.
           </span>
-          <div v-if="!online">
+          <div v-if="!remote">
             <div class="new-job__text-input-container">
               <vue-google-autocomplete
                 class="new-job__input new-job-step-2__location-text-input"
@@ -190,6 +193,7 @@ import { EventBus } from "@/utils/eventBus";
 
 import { Component, Mixins, Watch } from "vue-property-decorator";
 import VueGoogleAutocomplete from "vue-google-autocomplete";
+import loadGoogleMapsScript from "@/plugins/googlemaps";
 
 import ResponsiveMixin from "@/mixins/responsiveMixin";
 import { globalIcons } from "@/assets/icons/icons";
@@ -202,10 +206,10 @@ import {
   validateBudget,
 } from "./validations";
 
-import BaseForm from "@/components/Base/BaseForm.vue";
-import BaseButton from "@/components/Base/BaseButton.vue";
-import BaseIcon from "../../Base/BaseIcon.vue";
-import BaseDatePicker from "@/components/Base/BaseDatePicker.vue";
+const BaseForm = () => import("@/components/Base/BaseForm.vue");
+const BaseButton = () => import("@/components/Base/BaseButton.vue");
+const BaseIcon = () => import("@/components/Base/BaseIcon.vue");
+const BaseDatePicker = () => import("@/components/Base/BaseDatePicker.vue");
 
 const auth = namespace("auth");
 
@@ -230,6 +234,13 @@ export default class NewJobForm extends Mixins(ResponsiveMixin) {
     BEFORE_DATE: "BEFORE_DATE",
     FLEXIBLE: "FLEXIBLE",
   };
+  public datesType = {
+    ON_DATE: 1,
+    BEFORE_DATE: 2,
+    FLEXIBLE: 3,
+  };
+  public activeDatePicker = null;
+  public activeButton = null;
 
   public title = "Crear nuevo trabajo";
   public steps = [
@@ -259,19 +270,28 @@ export default class NewJobForm extends Mixins(ResponsiveMixin) {
     },
   ];
   public currentStep = this.steps[0];
-  public activeElement = {
-    date: null,
-  };
 
   public description = "";
+  public date = null;
   public taskDate = null;
   public taskBeforeDate = null;
-  public flexible = false;
-  public location = "";
-  public online = false;
+  public dateType = null;
+  public location = null;
   public details = "";
   public rawBudget = null;
   public formattedBudget = null;
+  public remote = false;
+
+  created() {
+    loadGoogleMapsScript(this.$i18n.locale)
+      .then(() => {
+        // The Google Maps script is loaded, you can use the Google Maps API now
+      })
+      .catch((error) => {
+        // Handle any errors that occurred while loading the Google Maps script
+        console.error("An error occurred:", error);
+      });
+  }
 
   @auth.State("authenticated")
   public authenticated!: State["authenticated"];
@@ -279,23 +299,32 @@ export default class NewJobForm extends Mixins(ResponsiveMixin) {
   @auth.Action("jobInProgress")
   public jobInProgress!: State["jobInProgress"];
 
+  public get finalLocation() {
+    if (this.remote) {
+      return {
+        remote: true,
+      };
+    } else {
+      return {
+        ...this.location,
+        remote: false,
+      };
+    }
+  }
+
   public validateInputs(): boolean {
     this.validationErrors = {};
 
     // Validations for STEP 1
     if (this.currentStep.index === 0) {
       this.validationErrors.description = validateDescription(this.description);
-      this.validationErrors.date = validateDate(
-        this.flexible,
-        this.taskDate,
-        this.taskBeforeDate
-      );
+      this.validationErrors.date = validateDate(this.dateType, this.date);
     }
 
     // Validations for STEP 2
     if (this.currentStep.index === 1) {
       this.validationErrors.location = validateLocation(
-        this.online,
+        this.remote,
         this.location
       );
     }
@@ -326,18 +355,21 @@ export default class NewJobForm extends Mixins(ResponsiveMixin) {
     this.currentStep = this.steps[currentIndex - 1];
   }
 
-  public setActiveDateOption(element) {
-    this.activeElement.date = element;
-    this.flexible = element === this.datesOption.FLEXIBLE;
+  public setDate(option) {
+    this.activeDatePicker = option;
 
-    this.taskDate =
-      element === this.datesOption.BEFORE_DATE ? null : this.taskDate;
-    this.taskBeforeDate =
-      element === this.datesOption.ON_DATE ? null : this.taskBeforeDate;
-  }
-
-  public isNotSelected(element, key) {
-    return this.activeElement[key] !== element;
+    if (option === this.datesOption.ON_DATE) {
+      this.date = this.taskDate;
+      this.taskBeforeDate = null;
+      this.dateType = 1;
+    } else if (option === this.datesOption.BEFORE_DATE) {
+      this.date = this.taskBeforeDate;
+      this.taskDate = null;
+      this.dateType = 2;
+    } else if (option === this.datesOption.FLEXIBLE) {
+      this.date = null;
+      this.dateType = 3;
+    }
   }
 
   public getAddressData(addressData) {
@@ -356,11 +388,8 @@ export default class NewJobForm extends Mixins(ResponsiveMixin) {
     if (!this.validateInputs()) return;
     const payload = {
       description: this.description,
-      taskDate: this.taskDate,
-      taskBeforeDate: this.taskBeforeDate,
-      flexible: this.flexible,
-      location: this.location,
-      online: this.online,
+      date: this.date,
+      location: this.finalLocation,
       details: this.details,
       budget: this.rawBudget,
     };
@@ -383,8 +412,8 @@ export default class NewJobForm extends Mixins(ResponsiveMixin) {
     this.validationErrors = {};
   }
 
-  @Watch("online")
-  onOnline() {
+  @Watch("remote")
+  onRemote() {
     this.validationErrors = {};
   }
 }

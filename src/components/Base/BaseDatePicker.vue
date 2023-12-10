@@ -7,7 +7,7 @@
       :secondary="secondary"
       @click="toggleDatePicker"
     />
-    <div v-if="menu" class="date-picker-overlay">
+    <div v-if="menu && show" class="date-picker-overlay">
       <v-date-picker
         v-model="date"
         @input="updateDate"
@@ -21,8 +21,9 @@
 <script lang="ts">
 import dayjs from "dayjs";
 
-import { Component, Vue, Prop } from "vue-property-decorator";
-import BaseButton from "@/components/Base/BaseButton.vue";
+import { Component, Vue, Prop, Watch } from "vue-property-decorator";
+
+const BaseButton = () => import("@/components/Base/BaseButton.vue");
 
 @Component({
   components: {
@@ -33,7 +34,8 @@ export default class BaseDatePicker extends Vue {
   @Prop() value: string;
   @Prop() text: string;
   @Prop({ default: "180px" }) readonly minWidth!: string;
-  @Prop({ default: false }) readonly secondary!: boolean;
+  @Prop({ default: false }) secondary!: boolean;
+  @Prop({ default: false }) readonly show!: boolean;
 
   public date = dayjs().format("YYYY-MM-DD");
   public menu = false;
@@ -49,13 +51,20 @@ export default class BaseDatePicker extends Vue {
   }
 
   public toggleDatePicker() {
-    this.menu = !this.menu;
+    if (this.show) {
+      this.menu = !this.menu;
+    }
   }
 
   public updateDate(newValue) {
     this.$emit("input", newValue);
     this.date = newValue;
     this.menu = false;
+  }
+
+  @Watch("show")
+  onShowChanged(newVal: boolean) {
+    this.menu = newVal;
   }
 }
 </script>

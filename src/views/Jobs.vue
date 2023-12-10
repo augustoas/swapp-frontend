@@ -34,7 +34,7 @@ import { namespace } from "vuex-class";
 import ResponsiveMixin from "@/mixins/responsiveMixin";
 // import { jobIcons } from "@/assets/icons/icons";
 
-import BaseButton from "@/components/Base/BaseButton.vue";
+const BaseButton = () => import("@/components/Base/BaseButton.vue");
 
 import { jobsMocks } from "./jobsMock";
 

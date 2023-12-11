@@ -1,7 +1,7 @@
 <template>
   <div :class="{ 'new-job-form': true, 'new-job-form--mobile': isMobile }">
     <div v-if="!isMobile" class="new-job-form__step-list">
-      <span class="new-job-form__step-list-title">Nuevo trabajo</span>
+      <span class="new-job-form__step-list-title">Nuevo trabajo 2</span>
       <span
         v-for="(step, index) in steps"
         :key="index"

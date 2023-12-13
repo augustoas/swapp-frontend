@@ -16,5 +16,5 @@ COPY . .
 # Step 6: Build the app using Yarn
 RUN yarn build
 
-# Step 7: Use nginx to serve the app
+# Step 7: Use nginx to serve the app 
 RUN yarn serve --port 8081

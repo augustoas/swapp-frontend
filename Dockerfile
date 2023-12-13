@@ -17,10 +17,4 @@ COPY . .
 RUN yarn build
 
 # Step 7: Use nginx to serve the app
-FROM nginx:stable-alpine as production-stage
-
-# Step 8: Copy the build from the 'build-stage' to the nginx directory
-COPY --from=build-stage /app/dist /usr/share/nginx/html
-
-# Step 9: Run nginx
-CMD ["nginx", "-g", "daemon off;"]
+RUN yarn serve --port 8081

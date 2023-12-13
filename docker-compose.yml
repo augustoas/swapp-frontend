@@ -3,7 +3,7 @@ services:
   vueapp:
     build: .
     ports:
-      - "8081:80"
+      - "8081:81"
     restart: always
     networks:
       - swap-network

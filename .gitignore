@@ -1,5 +1,4 @@
 node_modules
-.storybook
 .env
 yarn.lock
 coverage

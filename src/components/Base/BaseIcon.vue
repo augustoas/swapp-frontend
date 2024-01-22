@@ -17,7 +17,7 @@ export default class BaseIcon extends Vue {
   @Prop({ default: 18 }) readonly height!: string | number;
   @Prop({ default: "0 0 18 18" }) readonly viewBox!: string;
   @Prop({ default: false }) readonly fill!: boolean;
-  @Prop({ default: "var(--navbar-icon-blue)" }) readonly color!: string;
+  @Prop({ default: "var(--base-dark-blue)" }) readonly color!: string;
 
   getIconFilled() {
     return this.fill ? this.color : "var(--navbar-icon-grey)";

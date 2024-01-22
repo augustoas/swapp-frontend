@@ -95,14 +95,14 @@ export default class BaseModal extends Vue {
   }
 
   .base-dialog__ok-button {
-    background-color: var(--purple) !important;
+    background-color: var(--base-dark-blue) !important;
     color: white;
     font-size: 12px;
     font-weight: 600;
   }
 
   .base-dialog__cancel-button {
-    color: var(--purple) !important;
+    color: var(--base-dark-blue) !important;
     font-size: 12px;
     font-weight: 600;
   }

@@ -194,7 +194,7 @@ export default class Chat extends Mixins(ResponsiveMixin) {
 }
 
 .chat-form__button {
-  background-color: var(--purple);
+  background-color: var(--base-dark-blue);
   color: #fff;
   border: none;
   border-radius: 4px;

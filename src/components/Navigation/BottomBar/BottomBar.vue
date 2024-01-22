@@ -9,7 +9,7 @@
             :width="25"
             :height="25"
             :viewBox="'0 0 25 25'"
-            :color="'var(--purple)'"
+            :color="'var(--base-dark-blue)'"
           />
           <span :class="{ 'tab-label': true, active: getFilled(index) }">
             {{ item.name }}
@@ -60,13 +60,18 @@ export default class BottomBar extends Mixins(ResponsiveMixin) {
         icon: this.navigationIcons.homeIcon,
       },
       {
+        path: "/jobs",
+        name: "Browse Jobs",
+        icon: this.navigationIcons.magnifyIcon,
+      },
+      {
         path: "/post",
         name: "Post a Job",
         icon: this.navigationIcons.plusIcon,
       },
       {
         path: "/jobs",
-        name: "Browse Jobs",
+        name: "My Jobs",
         icon: this.navigationIcons.listIcon,
       },
     ];
@@ -150,6 +155,6 @@ export default class BottomBar extends Mixins(ResponsiveMixin) {
 }
 
 .active {
-  color: var(--purple);
+  color: var(--base-dark-blue);
 }
 </style>

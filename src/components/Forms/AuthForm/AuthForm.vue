@@ -66,7 +66,7 @@
               :width="25"
               :height="25"
               :viewBox="'0 0 25 25'"
-              :color="'var(--purple)'"
+              :color="'var(--base-dark-blue)'"
             />
           </div>
         </div>
@@ -103,6 +103,7 @@
           class="auth-form__button"
           :text="'Continue'"
           :isSquare="true"
+          :isHoverDisabled="true"
           @click="isSignUp ? onSignUp() : onSignIn()"
         ></BaseButton>
         <v-progress-circular
@@ -387,7 +388,7 @@ export default class AuthForm extends Vue {
 }
 
 .auth-form__input:focus {
-  outline: 1px solid var(--purple);
+  outline: 1px solid var(--base-dark-blue);
 }
 
 .auth-form__toggle-password {
@@ -404,7 +405,7 @@ export default class AuthForm extends Vue {
 }
 
 .auth-form__button {
-  background-color: var(--purple);
+  background-color: var(--base-dark-blue);
   color: #fff;
   border: none;
   border-radius: 4px;
@@ -423,7 +424,7 @@ export default class AuthForm extends Vue {
 }
 
 .auth-form__link-to {
-  color: var(--purple);
+  color: var(--base-dark-blue);
   font-weight: 500;
 }
 

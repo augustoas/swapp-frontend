@@ -38,7 +38,7 @@ export default class CurrentMonthChart extends Vue {
   ];
 
   public marker = {
-    fillColor: "var(--dark-purple)",
+    fillColor: "var(--base-dark-blue)",
     enabled: true,
     symbol: "circle",
     lineColor: "#FFFFFF",
@@ -50,7 +50,7 @@ export default class CurrentMonthChart extends Vue {
     {
       name: "Income in current month",
       data: [35000, 140000, 25000, 60000, 40000],
-      color: "var(--purple)",
+      color: "var(--base-dark-blue)",
       marker: this.marker,
     },
   ];

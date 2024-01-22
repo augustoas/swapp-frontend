@@ -1,7 +1,7 @@
 <template>
   <div :class="{ 'new-job-form': true, 'new-job-form--mobile': isMobile }">
     <div v-if="!isMobile" class="new-job-form__step-list">
-      <span class="new-job-form__step-list-title">Nuevo trabajo 2</span>
+      <span class="new-job-form__step-list-title">Nuevo trabajo</span>
       <span
         v-for="(step, index) in steps"
         :key="index"
@@ -111,7 +111,7 @@
                 :width="25"
                 :height="25"
                 :viewBox="'0 0 25 25'"
-                :color="'var(--purple)'"
+                :color="'var(--base-dark-blue)'"
               />
             </div>
             <span class="new-job__input-tooltip">
@@ -158,7 +158,7 @@
               :width="25"
               :height="25"
               :viewBox="'0 0 25 25'"
-              :color="'var(--purple)'"
+              :color="'var(--base-dark-blue)'"
             />
           </div>
         </div>
@@ -175,6 +175,7 @@
         <BaseButton
           :text="currentStep.index !== 3 ? 'Continuar' : 'Finalizar'"
           :minWidth="'150px'"
+          :secondary="true"
           @click="
             currentStep.index < steps.length - 1 ? nextStep() : createJob()
           "
@@ -446,7 +447,7 @@ export default class NewJobForm extends Mixins(ResponsiveMixin) {
       }
 
       &.active::before {
-        background-color: var(--purple);
+        background-color: var(--base-dark-blue);
       }
     }
   }
@@ -477,7 +478,7 @@ export default class NewJobForm extends Mixins(ResponsiveMixin) {
   }
 
   .new-job__input:focus {
-    outline: 1px solid var(--purple);
+    outline: 1px solid var(--base-dark-blue);
   }
 
   .new-job__input-icon {

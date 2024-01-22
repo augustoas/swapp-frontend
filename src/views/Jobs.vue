@@ -108,7 +108,7 @@ export default class Jobs extends Mixins(ResponsiveMixin) {
 }
 
 .job-budget {
-  color: var(--purple);
+  color: var(--base-dark-blue);
   font-weight: bold;
 }
 /* MOBILE */

@@ -3,7 +3,7 @@
     <!-- Desktop version -->
     <div v-if="!isMobile" class="top-bar top-bar--desktop">
       <div class="top-bar__logo" @click="navigateToPath('/', tabs.HOME)">
-        <img src="@/assets/swapp-logo-brand.png" alt="Swap" />
+        <img src="@/assets/swap-logo-brand.png" alt="Swap" />
       </div>
       <div class="top-bar__center-col">
         <BaseButton
@@ -17,18 +17,14 @@
         >
           {{ topBarMessages.browseTasks }}
         </span>
-        <span
-          class="top-bar__menu-item"
-          @click="navigateToPath('/', tabs.HOME)"
-        >
-          {{ topBarMessages.howItWorks }}
-        </span>
       </div>
       <div class="top-bar__right-col" v-if="authenticated">
-        <img
-          class="top-bar__notification-icon"
-          src="@/assets/bell.png"
-          alt="Bell"
+        <BaseIcon
+          :fill="true"
+          :icon="navigationIcons.notificationIcon"
+          :width="30"
+          :height="25"
+          :viewBox="'0 0 35 15'"
         />
         <span class="top-bar__notification">9</span>
         <v-menu offset-y>
@@ -40,9 +36,10 @@
             >
               <BaseIcon
                 class="top-bar__account-icon"
+                :fill="true"
                 :icon="navigationIcons.accountIcon"
-                :width="30"
-                :height="30"
+                :width="25"
+                :height="22"
                 :viewBox="'0 0 20 20'"
               />
             </div>
@@ -81,14 +78,39 @@
       </div>
     </div>
     <!-- Mobile version -->
-    <div v-if="isMobile" class="top-bar top-bar--mobile">
+    <div
+      v-if="isMobile"
+      :class="{
+        'top-bar': true,
+        'top-bar--mobile': isMobile,
+        authenticated: authenticated,
+      }"
+    >
       <div class="top-bar__logo">
         <img
-          src="@/assets/swapp-logo-only.png"
+          src="@/assets/swap-logo-brand.png"
           alt="Swap"
-          width="50"
-          height="50"
+          width="40"
+          height="40"
           @click="navigateToPath('/', tabs.HOME)"
+        />
+      </div>
+      <div class="top-bar__right-col" v-if="authenticated">
+        <BaseIcon
+          :fill="true"
+          :icon="navigationIcons.notificationIcon"
+          :width="30"
+          :height="25"
+          :viewBox="'0 0 35 15'"
+        />
+        <span class="top-bar__notification">9</span>
+        <BaseIcon
+          class="top-bar__account-icon"
+          :fill="true"
+          :icon="navigationIcons.messagesIcon"
+          :width="30"
+          :height="25"
+          :viewBox="'0 0 35 15'"
         />
       </div>
     </div>
@@ -166,28 +188,9 @@ export default class TopBar extends Mixins(ResponsiveMixin) {
 .top-bar__logo img {
   width: auto;
   height: 50px;
-  margin-left: 37px;
+  margin-left: 15px;
   margin-top: 15px;
   cursor: pointer;
-}
-
-.top-bar__search-input {
-  flex: 1;
-  max-width: none !important;
-  margin: 20px 20px !important;
-  background-color: #fff !important;
-  border-radius: 20px !important;
-  .v-input__icon--prepend-inner {
-    color: blue;
-  }
-  .v-label {
-    color: blue !important;
-  }
-  .v-input__control {
-    height: 40px;
-    display: flex;
-    align-items: center;
-  }
 }
 
 .top-bar__center-col {
@@ -205,7 +208,7 @@ export default class TopBar extends Mixins(ResponsiveMixin) {
 }
 
 .top-bar__right-col {
-  margin-right: 38px;
+  margin-right: 20px;
   display: flex;
   align-items: center;
 }
@@ -221,7 +224,7 @@ export default class TopBar extends Mixins(ResponsiveMixin) {
   position: absolute;
   width: 15px;
   height: 15px;
-  right: 70px;
+  right: 45px;
   top: 24px;
   background-color: #ff6760;
   font-size: 9px;
@@ -229,10 +232,6 @@ export default class TopBar extends Mixins(ResponsiveMixin) {
   border-radius: 25px;
   color: white;
   font-weight: 600;
-}
-
-.top-bar__notification-icon {
-  margin-right: 10px;
 }
 
 /* MOBILE */
@@ -248,12 +247,25 @@ export default class TopBar extends Mixins(ResponsiveMixin) {
   left: 0;
   right: 0;
   z-index: 3;
-  justify-content: center;
 
   .top-bar__logo img {
-    height: 60px !important;
-    margin-top: 10px;
-    margin-left: 0px;
+    right: 10px;
+  }
+}
+
+.top-bar--mobile.authenticated {
+  .top-bar__logo img {
+    margin-left: 15px;
+  }
+
+  .top-bar__right-col {
+    display: flex;
+    align-items: center;
+    margin-right: 10px;
+  }
+
+  .top-bar__notification {
+    right: 41px !important;
   }
 }
 </style>

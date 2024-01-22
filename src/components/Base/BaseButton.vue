@@ -8,8 +8,8 @@
         'disabled-button': isDisabled,
       }"
       :style="buttonStyle"
-      @mouseover="isHovered = true"
-      @mouseleave="isHovered = false"
+      @mouseover="isHovered = true && !isHoverDisabled"
+      @mouseleave="isHovered = false && !isHoverDisabled"
       @click="handleClick"
     >
       {{ text }}
@@ -20,7 +20,7 @@
         :width="15"
         :height="15"
         :viewBox="'0 0 20 20'"
-        :color="secondary && !isHovered ? 'var(--purple)' : 'white'"
+        :color="secondary && !isHovered ? 'var(--base-dark-blue)' : 'white'"
         :fill="true"
       />
     </button>
@@ -41,7 +41,7 @@ const BaseIcon = () => import("@/components/Base/BaseIcon.vue");
 })
 export default class BaseButton extends Vue {
   @Prop({ required: true }) readonly text!: string;
-  @Prop({ default: "var(--purple)" }) readonly color!: string;
+  @Prop({ default: "var(--base-dark-blue)" }) readonly color!: string;
   @Prop({ default: "white" }) readonly textColor!: string;
   @Prop({ default: "input" }) readonly type!: string;
   @Prop({ default: "white" }) readonly hoverText!: string;
@@ -50,6 +50,7 @@ export default class BaseButton extends Vue {
   @Prop({ default: false }) readonly isSquare!: boolean;
   @Prop() readonly minWidth!: boolean;
   @Prop({ default: false }) readonly isDisabled!: boolean;
+  @Prop({ default: false }) readonly isHoverDisabled!: boolean;
 
   public types = {
     INPUT: "input",
@@ -61,16 +62,14 @@ export default class BaseButton extends Vue {
   public isHovered = false;
 
   getButtonColor() {
-    const color = this.secondary ? "var(--grey)" : "var(--purple)";
-    const hoverColor = this.secondary
-      ? "var(--mid-purple)"
-      : "var(--mid-purple)";
+    const color = this.secondary ? "var(--grey)" : "var(--base-dark-blue)";
+    const hoverColor = this.secondary ? "var(--base-dark-blue)" : "var(--grey)";
     return this.isHovered ? hoverColor : color;
   }
 
   getTextColor() {
-    const textColor = this.secondary ? "var(--purple)" : "white";
-    const hoverTextColor = this.secondary ? "white" : "white";
+    const textColor = this.secondary ? "var(--base-dark-blue)" : "white";
+    const hoverTextColor = this.secondary ? "white" : "var(--base-dark-blue)";
     return this.isHovered ? hoverTextColor : textColor;
   }
 
@@ -103,7 +102,7 @@ export default class BaseButton extends Vue {
 .custom-button {
   display: flex;
   padding: 10px 20px;
-  border: 1px solid var(--purple);
+  border: 1px solid var(--base-dark-blue);
   font-weight: bold;
   border-radius: 25px;
   cursor: pointer;

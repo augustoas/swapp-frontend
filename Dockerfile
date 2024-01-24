@@ -1,5 +1,5 @@
 # Step 1: Use a node base image
-FROM node:lts as build-stage
+FROM node:18.6.0 as build-stage
 
 # Step 2: Set the working directory
 WORKDIR /app

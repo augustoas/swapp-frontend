@@ -5,6 +5,7 @@
       :text="dateLabel"
       :type="'date'"
       :secondary="secondary"
+      :isHoverDisabled="!secondary"
       @click="toggleDatePicker"
     />
     <div v-if="menu && show" class="date-picker-overlay">
@@ -13,6 +14,8 @@
         @input="updateDate"
         no-title
         :value="value"
+        color="var(--base-light-blue)"
+        class="custom-date-picker"
       ></v-date-picker>
     </div>
   </div>
@@ -36,6 +39,7 @@ export default class BaseDatePicker extends Vue {
   @Prop({ default: "180px" }) readonly minWidth!: string;
   @Prop({ default: false }) secondary!: boolean;
   @Prop({ default: false }) readonly show!: boolean;
+  @Prop({ default: false }) isHoverDisabled!: boolean;
 
   public date = dayjs().format("YYYY-MM-DD");
   public menu = false;
@@ -97,5 +101,13 @@ export default class BaseDatePicker extends Vue {
     border-right: 10px solid transparent;
     border-bottom: 10px solid white; // Use the same color as the modal background
   }
+}
+
+.custom-date-picker {
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+}
+
+.vdp-datepicker__navigation button {
+  color: var(--base-dark-blue);
 }
 </style>

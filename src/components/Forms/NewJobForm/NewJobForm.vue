@@ -14,11 +14,14 @@
       :subtitle="currentStep.subtitle"
       :maxWidth="'650px'"
       :validationErrors="validationErrors"
+      :showStepNumber="true"
+      :steps="steps.length"
+      :currentStep="currentStep.index + 1"
     >
       <template v-slot:content>
         <div v-if="currentStep.index === 0" class="d-flex">
           <span class="new-job__input-tooltip">
-            Escribe en breves palabras lo que necesitas.
+            Elige un título para la tarea.
           </span>
           <textarea
             class="new-job__input new-job-step-1__input-description"
@@ -28,11 +31,30 @@
             type="text"
             id="description"
             v-model="description"
-            placeholder="Ej: Necesito mover un sillón"
+            placeholder="Ej: Necesito mover un sillón."
           />
+          <span class="new-job__input-tooltip">
+            Detalla lo mejor posible la tarea.
+          </span>
+          <textarea
+            class="new-job__input new-job-step-3__input-details"
+            :class="{
+              'base__input-error': validationErrors.details,
+            }"
+            type="text"
+            id="details"
+            v-model="details"
+            placeholder="Mientras más detalles tu tarea, más fácil será encontrar un Swapper."
+          />
+          <!-- <label class="custom-file-upload">
+            <input type="file" accept="image/*" />
+            <span>+</span> Upload Image
+          </label> -->
+        </div>
+        <div v-if="currentStep.index === 1" class="d-flex">
           <div class="new-job-step-1__dates-container">
             <span class="new-job__input-tooltip">
-              Debes seleccionar una de las siguientes opciones.
+              ¿Para cuándo lo necesitas? Selecciona flexible si no tienes clara la fecha y lo quieres coordinar más adelante.
             </span>
             <div class="new-job-step-1__dates-inputs-container">
               <BaseDatePicker
@@ -60,25 +82,21 @@
                 class="new-job-step-1__date-input"
                 :text="'Fecha flexible'"
                 :secondary="activeDatePicker !== datesOption.FLEXIBLE"
+                :isHoverDisabled="activeDatePicker === datesOption.FLEXIBLE"
                 @click.native="setDate(datesOption.FLEXIBLE)"
               />
             </div>
-            <div
-              v-if="activeDatePicker === datesOption.FLEXIBLE"
-              class="new-job__input-tooltip"
-            >
-              *** Flexible: la fecha se acordará con el trabajador
-              posteriormente.
-            </div>
           </div>
-        </div>
-        <div v-if="currentStep.index === 1" class="d-flex">
+          <span class="new-job__input-tooltip">
+            Selecciona Remoto si se puede realizar el trabajo de manera remota.
+          </span>
           <div class="new-job-step-2__location-buttons-container">
             <BaseButton
               class="new-job-step-2__location-button"
               :text="'En Persona'"
               :secondary="remote"
               :minWidth="'150px'"
+              :isHoverDisabled="!remote"
               @click="remote = false"
             />
             <BaseButton
@@ -86,13 +104,15 @@
               :text="'Remoto'"
               :secondary="!remote"
               :minWidth="'150px'"
+              :isHoverDisabled="remote"
               @click="remote = true"
             />
           </div>
-          <span class="new-job__input-tooltip">
-            Selecciona Remoto si se puede realizar el trabajo de manera remota.
-          </span>
           <div v-if="!remote">
+            <span class="new-job__input-tooltip">
+              Escribe la dirección donde requieres el trabajo (se puede detallar
+              más adelante).
+            </span>
             <div class="new-job__text-input-container">
               <vue-google-autocomplete
                 class="new-job__input new-job-step-2__location-text-input"
@@ -114,28 +134,9 @@
                 :color="'var(--base-dark-blue)'"
               />
             </div>
-            <span class="new-job__input-tooltip">
-              Escribe la dirección donde requieres el trabajo (se puede detallar
-              más adelante).
-            </span>
           </div>
         </div>
         <div v-if="currentStep.index === 2" class="d-flex">
-          <span class="new-job__input-tooltip">
-            Escribe todos los detalles que haya que considerar.
-          </span>
-          <textarea
-            class="new-job__input new-job-step-3__input-details"
-            :class="{
-              'base__input-error': validationErrors.details,
-            }"
-            type="text"
-            id="details"
-            v-model="details"
-            placeholder="Escriba un resumen de los detalles claves"
-          />
-        </div>
-        <div v-if="currentStep.index === 3" class="d-flex">
           <span class="new-job__input-tooltip">
             Podrás negociar el precio final más adelante.
           </span>
@@ -169,13 +170,15 @@
           class="new-job__back-button"
           :text="'Volver'"
           :minWidth="'150px'"
-          :secondary="true"
+          :tertiary="true"
+          :isHoverDisabled="true"
           @click="previousStep"
         />
         <BaseButton
-          :text="currentStep.index !== 3 ? 'Continuar' : 'Finalizar'"
+          :text="currentStep.index !== 2 ? 'Continuar' : 'Finalizar'"
           :minWidth="'150px'"
-          :secondary="true"
+          :tertiary="true"
+          :isHoverDisabled="true"
           @click="
             currentStep.index < steps.length - 1 ? nextStep() : createJob()
           "
@@ -247,27 +250,21 @@ export default class NewJobForm extends Mixins(ResponsiveMixin) {
   public steps = [
     {
       id: "title_date",
-      title: "Título y Fecha",
-      subtitle: "¿Qué necesitas y cuándo?",
+      title: "Título y detalles",
+      subtitle: "¿Qué necesitas?",
       index: 0,
     },
     {
       id: "location",
-      title: "Ubicación",
-      subtitle: "Dinos dónde,",
+      title: "Ubicación y Fecha",
+      subtitle: "¿Cuándo y dónde?",
       index: 1,
-    },
-    {
-      id: "details",
-      title: "Detalles",
-      subtitle: "Detalles a considerar",
-      index: 2,
     },
     {
       id: "budget",
       title: "Precio",
-      subtitle: "¿Cuánto te gustaría pagar?",
-      index: 3,
+      subtitle: "¿Cuánto esperas pagar?",
+      index: 2,
     },
   ];
   public currentStep = this.steps[0];
@@ -319,7 +316,7 @@ export default class NewJobForm extends Mixins(ResponsiveMixin) {
     // Validations for STEP 1
     if (this.currentStep.index === 0) {
       this.validationErrors.description = validateDescription(this.description);
-      this.validationErrors.date = validateDate(this.dateType, this.date);
+      this.validationErrors.details = validateDetails(this.details);
     }
 
     // Validations for STEP 2
@@ -328,15 +325,11 @@ export default class NewJobForm extends Mixins(ResponsiveMixin) {
         this.remote,
         this.location
       );
+      this.validationErrors.date = validateDate(this.dateType, this.date);
     }
 
     // Validations for STEP 3
     if (this.currentStep.index === 2) {
-      this.validationErrors.details = validateDetails(this.details);
-    }
-
-    // Validations for STEP 4
-    if (this.currentStep.index === 3) {
       this.validationErrors.budget = validateBudget(this.rawBudget);
     }
 
@@ -482,10 +475,10 @@ export default class NewJobForm extends Mixins(ResponsiveMixin) {
   }
 
   .new-job__input-icon {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    width: 25px;
+    position: relative;
+    top: -45px;
+    float: right;
+    margin-right: 10px;
   }
 
   .new-job__input-prepend-icon {
@@ -525,10 +518,12 @@ export default class NewJobForm extends Mixins(ResponsiveMixin) {
 
   .new-job-step-2__location-buttons-container {
     display: flex;
+    align-self: flex-start;
+    margin-bottom: 10px;
   }
 
   .new-job-step-2__location-button {
-    margin-right: 20px;
+    margin-right: 10px;
   }
 
   .new-job-step-2__location-text-input {
@@ -538,6 +533,7 @@ export default class NewJobForm extends Mixins(ResponsiveMixin) {
     font-size: 14px;
     margin-right: 5px;
     width: 100%;
+    margin-bottom: 10px;
   }
 
   // STEP 3

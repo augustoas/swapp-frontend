@@ -4,8 +4,11 @@
     :style="{ 'max-width': maxWidth }"
   >
     <div class="base-form__section">
-      <h2 class="base-form__title">{{ title }}</h2>
-      <div v-if="title" class="base-form__divider-line"></div>
+      <div class="base-form__step-container">
+        <span v-if="showStepNumber" class="base-form__step-number"
+          >Paso {{ currentStep + "/" + steps }}</span
+        >
+      </div>
       <h2 class="base-form__subtitle">{{ subtitle }}</h2>
     </div>
     <div class="base-form__body">
@@ -34,9 +37,12 @@ import ResponsiveMixin from "@/mixins/responsiveMixin";
 
 @Component
 export default class BaseForm extends Mixins(ResponsiveMixin) {
-  @Prop({ required: true }) readonly title!: string;
+  @Prop() readonly title!: string;
   @Prop({ required: true }) readonly subtitle!: string;
   @Prop({ default: "568px" }) readonly maxWidth!: string;
+  @Prop({ default: false }) readonly showStepNumber!: boolean;
+  @Prop() readonly currentStep!: number;
+  @Prop() readonly steps!: number;
   @Prop() readonly validationErrors!: string;
 
   created() {
@@ -66,7 +72,7 @@ export default class BaseForm extends Mixins(ResponsiveMixin) {
 }
 
 .base-form__body {
-  width: 80%;
+  width: 85%;
   margin-left: auto;
   margin-right: auto;
   padding-left: 10px;
@@ -76,6 +82,13 @@ export default class BaseForm extends Mixins(ResponsiveMixin) {
 .base-form__section {
   width: 100%;
   margin-bottom: 20px;
+}
+
+.base-form__step-container {
+  display: flex;
+  align-items: center;
+  margin: 20px 65px 10px 65px;
+  justify-content: right;
 }
 
 .base-form__title {
@@ -88,7 +101,7 @@ export default class BaseForm extends Mixins(ResponsiveMixin) {
   font-size: 20px;
   color: #222222;
   font-weight: 600;
-  margin-top: 25px;
+  margin-top: 20px;
   margin-left: 65px;
   float: left;
 }
@@ -109,6 +122,10 @@ export default class BaseForm extends Mixins(ResponsiveMixin) {
   margin-top: 10px;
 }
 
+.base-form__step-number {
+  font-size: 12px;
+}
+
 /* MOBILE SPECIFIC */
 
 .base-form--mobile {
@@ -117,11 +134,6 @@ export default class BaseForm extends Mixins(ResponsiveMixin) {
   .base-form__subtitle {
     float: none;
     margin-left: 0px;
-  }
-
-  .base-form__inputs {
-    position: absolute;
-    bottom: 50px;
   }
 }
 </style>

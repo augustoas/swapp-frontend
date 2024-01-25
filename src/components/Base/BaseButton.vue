@@ -2,14 +2,17 @@
   <div class="button-container">
     <button
       :class="{
-        'custom-button': !isCircle,
+        'base-button': !isCircle,
+        'base-button-hover': !isHoverDisabled && !isDisabled,
+        'secondary-button': secondary && !isDisabled,
+        'secondary-button-hover': secondary && !isHoverDisabled && !isDisabled,
+        'tertiary-button': tertiary && !isDisabled,
+        'tertiary-button-hover': tertiary && !isHoverDisabled && !isDisabled,
         'rounded-button': isCircle,
         'square-button': isSquare,
         'disabled-button': isDisabled,
       }"
       :style="buttonStyle"
-      @mouseover="isHovered = true && !isHoverDisabled"
-      @mouseleave="isHovered = false && !isHoverDisabled"
       @click="handleClick"
     >
       {{ text }}
@@ -44,8 +47,8 @@ export default class BaseButton extends Vue {
   @Prop({ default: "var(--base-dark-blue)" }) readonly color!: string;
   @Prop({ default: "white" }) readonly textColor!: string;
   @Prop({ default: "input" }) readonly type!: string;
-  @Prop({ default: "white" }) readonly hoverText!: string;
   @Prop({ default: false }) readonly secondary!: boolean;
+  @Prop({ default: false }) readonly tertiary!: boolean;
   @Prop({ default: false }) readonly isCircle!: boolean;
   @Prop({ default: false }) readonly isSquare!: boolean;
   @Prop() readonly minWidth!: boolean;
@@ -61,22 +64,8 @@ export default class BaseButton extends Vue {
 
   public isHovered = false;
 
-  getButtonColor() {
-    const color = this.secondary ? "var(--grey)" : "var(--base-dark-blue)";
-    const hoverColor = this.secondary ? "var(--base-dark-blue)" : "var(--grey)";
-    return this.isHovered ? hoverColor : color;
-  }
-
-  getTextColor() {
-    const textColor = this.secondary ? "var(--base-dark-blue)" : "white";
-    const hoverTextColor = this.secondary ? "white" : "var(--base-dark-blue)";
-    return this.isHovered ? hoverTextColor : textColor;
-  }
-
   get buttonStyle() {
     return {
-      backgroundColor: this.isDisabled ? "var(--grey)" : this.getButtonColor(),
-      color: this.isDisabled ? "var(--dark-grey)" : this.getTextColor(),
       minWidth: this.minWidth,
       cursor: this.isDisabled ? "default" : "pointer",
     };
@@ -88,7 +77,7 @@ export default class BaseButton extends Vue {
     } else {
       this.$emit("click-disabled");
     }
-  }
+  }  
 }
 </script>
 
@@ -99,15 +88,46 @@ export default class BaseButton extends Vue {
   align-items: center;
 }
 
-.custom-button {
+.base-button {
   display: flex;
   padding: 10px 20px;
   border: 1px solid var(--base-dark-blue);
   font-weight: bold;
   border-radius: 25px;
   cursor: pointer;
-  transition: background-color 0.3s ease-in-out;
   justify-content: center;
+  transition: background-color 0.3s ease;
+  background-color: var(--base-dark-blue);
+  color: white;
+}
+
+.base-button-hover:hover {
+  background-color: white !important;
+  color: var(--base-dark-blue) !important;
+}
+
+.secondary-button {
+  background-color: white !important;
+  color: var(--base-dark-blue) !important;
+  border: 1px solid var(--base-dark-blue);
+}
+
+.secondary-button-hover:hover {
+  background-color: var(--base-dark-blue) !important;
+  color: white !important;
+  font-weight: bold;
+}
+
+.tertiary-button {
+  background-color: var(--base-light-blue) !important;
+  color: white !important;
+  border: none;
+}
+
+.tertiary-button-hover:hover {
+  background-color: var(--base-dark-blue) !important;
+  color: white !important;
+  font-weight: bold
 }
 
 .rounded-button {

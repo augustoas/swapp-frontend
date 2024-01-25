@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 import Cookies from 'js-cookie';
 
 import { ActionTree } from "vuex";

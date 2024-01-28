@@ -224,7 +224,7 @@ export default class TopBar extends Mixins(ResponsiveMixin) {
   position: absolute;
   width: 15px;
   height: 15px;
-  right: 45px;
+  right: 50px;
   top: 24px;
   background-color: #ff6760;
   font-size: 9px;
@@ -265,7 +265,7 @@ export default class TopBar extends Mixins(ResponsiveMixin) {
   }
 
   .top-bar__notification {
-    right: 41px !important;
+    right: 44px !important;
   }
 }
 </style>

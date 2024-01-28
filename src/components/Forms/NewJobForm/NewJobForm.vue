@@ -37,7 +37,7 @@
             Detalla lo mejor posible la tarea.
           </span>
           <textarea
-            class="new-job__input new-job-step-3__input-details"
+            class="new-job__input new-job-step-1__input-details"
             :class="{
               'base__input-error': validationErrors.details,
             }"
@@ -46,19 +46,29 @@
             v-model="details"
             placeholder="Mientras más detalles tu tarea, más fácil será encontrar un Swapper."
           />
-          <!-- <label class="custom-file-upload">
-            <input type="file" accept="image/*" />
-            <span>+</span> Upload Image
-          </label> -->
+          <span class="new-job__input-tooltip">
+            Agregar imágen (Opcional)
+          </span>
+          <v-file-input
+            class="new-job__input new-job-step-1__image-input"
+            accept="image/*"
+            label="Click aquí para agregar imágenes"
+            clearable
+            variant="outlined"
+            prepend-icon="mdi-paperclip"
+            color="var(--base-light-blue)"
+            multiple
+            v-model="images"
+          ></v-file-input>
         </div>
         <div v-if="currentStep.index === 1" class="d-flex">
-          <div class="new-job-step-1__dates-container">
+          <div class="new-job-step-2__dates-container">
             <span class="new-job__input-tooltip">
               ¿Para cuándo lo necesitas? Selecciona flexible si no tienes clara la fecha y lo quieres coordinar más adelante.
             </span>
-            <div class="new-job-step-1__dates-inputs-container">
+            <div class="new-job-step-2__dates-inputs-container">
               <BaseDatePicker
-                class="new-job-step-1__date-input"
+                class="new-job-step-2__date-input"
                 v-model="taskDate"
                 :text="'El día '"
                 :secondary="
@@ -68,7 +78,7 @@
                 @click.native="setDate(datesOption.ON_DATE)"
               />
               <BaseDatePicker
-                class="new-job-step-1__date-input"
+                class="new-job-step-2__date-input"
                 v-model="taskBeforeDate"
                 :text="'Antes del '"
                 :secondary="
@@ -79,7 +89,7 @@
                 @click.native="setDate(datesOption.BEFORE_DATE)"
               />
               <BaseButton
-                class="new-job-step-1__date-input"
+                class="new-job-step-2__date-input"
                 :text="'Fecha flexible'"
                 :secondary="activeDatePicker !== datesOption.FLEXIBLE"
                 :isHoverDisabled="activeDatePicker === datesOption.FLEXIBLE"
@@ -110,20 +120,19 @@
           </div>
           <div v-if="!remote">
             <span class="new-job__input-tooltip">
-              Escribe la dirección donde requieres el trabajo (se puede detallar
-              más adelante).
+              ¿A qué dirección deberá ir?
             </span>
             <div class="new-job__text-input-container">
-              <vue-google-autocomplete
+              <input
                 class="new-job__input new-job-step-2__location-text-input"
-                id="map"
-                ref="address"
-                classname="form-control"
-                placeholder="Dirección"
-                @placechanged="getAddressData"
-                :country="['cl']"
-                :types="'geocode'"
-              ></vue-google-autocomplete>
+                :class="{
+                  'base__input-error': validationErrors.location,
+                }"
+                type="text"
+                id="address"
+                v-model="location"
+                placeholder="Calle y número"
+              />
               <BaseIcon
                 class="new-job__input-icon"
                 :fill="true"
@@ -142,7 +151,7 @@
           </span>
           <div class="new-job__text-input-container">
             <input
-              class="new-job__input new-job-step-4__budget-text-input"
+              class="new-job__input new-job-step-3__budget-text-input"
               :class="{
                 'base__input-error': validationErrors.budget,
               }"
@@ -193,11 +202,8 @@ import { namespace } from "vuex-class";
 import { State } from "@/store/auth";
 
 import { Tabs } from "@/utils/consts";
-import { EventBus } from "@/utils/eventBus";
 
 import { Component, Mixins, Watch } from "vue-property-decorator";
-import VueGoogleAutocomplete from "vue-google-autocomplete";
-import loadGoogleMapsScript from "@/plugins/googlemaps";
 
 import ResponsiveMixin from "@/mixins/responsiveMixin";
 import { globalIcons } from "@/assets/icons/icons";
@@ -223,7 +229,6 @@ const auth = namespace("auth");
     BaseButton,
     BaseIcon,
     BaseDatePicker,
-    VueGoogleAutocomplete,
   },
 })
 export default class NewJobForm extends Mixins(ResponsiveMixin) {
@@ -274,22 +279,12 @@ export default class NewJobForm extends Mixins(ResponsiveMixin) {
   public taskDate = null;
   public taskBeforeDate = null;
   public dateType = null;
-  public location = null;
+  public location = "";
   public details = "";
   public rawBudget = null;
   public formattedBudget = null;
   public remote = false;
-
-  created() {
-    loadGoogleMapsScript(this.$i18n.locale)
-      .then(() => {
-        // The Google Maps script is loaded, you can use the Google Maps API now
-      })
-      .catch((error) => {
-        // Handle any errors that occurred while loading the Google Maps script
-        console.error("An error occurred:", error);
-      });
-  }
+  public images: File[] = [];
 
   @auth.State("authenticated")
   public authenticated!: State["authenticated"];
@@ -304,7 +299,7 @@ export default class NewJobForm extends Mixins(ResponsiveMixin) {
       };
     } else {
       return {
-        ...this.location,
+        location: this.location,
         remote: false,
       };
     }
@@ -321,11 +316,11 @@ export default class NewJobForm extends Mixins(ResponsiveMixin) {
 
     // Validations for STEP 2
     if (this.currentStep.index === 1) {
+      this.validationErrors.date = validateDate(this.dateType, this.date);
       this.validationErrors.location = validateLocation(
         this.remote,
         this.location
       );
-      this.validationErrors.date = validateDate(this.dateType, this.date);
     }
 
     // Validations for STEP 3
@@ -366,10 +361,6 @@ export default class NewJobForm extends Mixins(ResponsiveMixin) {
     }
   }
 
-  public getAddressData(addressData) {
-    this.location = addressData;
-  }
-
   public formatCurrency(value) {
     let numericValue = value.replace(/\D/g, "");
     let formattedValue = numericValue.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
@@ -382,23 +373,26 @@ export default class NewJobForm extends Mixins(ResponsiveMixin) {
     if (!this.validateInputs()) return;
     const payload = {
       description: this.description,
+      dateType: this.dateType,
       date: this.date,
       location: this.finalLocation,
       details: this.details,
       budget: this.rawBudget,
+      images: this.images,
     };
 
-    if (!this.authenticated) {
-      console.log(
-        "first sign in / sign up... storing payload on the localStorage"
-      );
-      localStorage.setItem("jobInProgress", JSON.stringify(payload));
-      this.jobInProgress(payload);
-      EventBus.$emit("updateCurrentTab", this.tabs.SIGN_IN);
-      this.$router.push("/signin");
-    } else {
-      console.log("creating job ...", payload); // CREATE JOB ACTION
-    }
+    console.log("Create Job", payload);
+
+    // LOGIC FOR CHECKING AUTH OR SAVE THE JOB IN PROGRESS
+    // if (!this.authenticated) {
+    //   localStorage.setItem("jobInProgress", JSON.stringify(payload));
+    //   this.jobInProgress(payload);
+    //   EventBus.$emit("updateCurrentTab", this.tabs.SIGN_IN);
+    //   this.$router.push("/signin");
+    // } else {
+    //   // CREATE JOB ACTION
+    //   console.log("Create Job", payload);
+    // }
   }
 
   @Watch("currentStep")
@@ -500,21 +494,37 @@ export default class NewJobForm extends Mixins(ResponsiveMixin) {
     margin-bottom: 20px;
   }
 
-  .new-job-step-1__dates-container {
+  .new-job-step-1__input-details {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+    width: 100%;
+    height: 100px;
+    margin-bottom: 20px;
+  }
+
+  .new-job-step-1__image-input {
+    ::v-deep .v-label {
+      font-size: 14px;
+    }
+  }
+
+  // STEP 2
+
+  .new-job-step-2__dates-container {
     display: flex;
     flex-direction: column;
   }
 
-  .new-job-step-1__dates-inputs-container {
+  .new-job-step-2__dates-inputs-container {
     display: flex;
     margin-bottom: 20px;
   }
 
-  .new-job-step-1__date-input {
+  .new-job-step-2__date-input {
     font-size: 14px;
   }
-
-  // STEP 2
 
   .new-job-step-2__location-buttons-container {
     display: flex;
@@ -538,28 +548,7 @@ export default class NewJobForm extends Mixins(ResponsiveMixin) {
 
   // STEP 3
 
-  .new-job-step-3__input-details {
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    font-size: 14px;
-    width: 100%;
-    height: 100px;
-    margin-bottom: 20px;
-  }
-
-  // STEP 4
-
-  .new-job-step-4__budget-text-input {
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    font-size: 14px;
-    width: 100%;
-    padding-left: 40px;
-  }
-
-  .new-job-step-4__budget-icon {
+  .new-job-step-3__budget-text-input {
     padding: 10px;
     border: 1px solid #ccc;
     border-radius: 4px;
@@ -575,12 +564,12 @@ export default class NewJobForm extends Mixins(ResponsiveMixin) {
   align-items: center;
   justify-content: space-between;
 
-  .new-job-step-1__dates-inputs-container {
+  .new-job-step-2__dates-inputs-container {
     flex-direction: column;
     align-items: flex-start;
   }
 
-  .new-job-step-1__date-input {
+  .new-job-step-2__date-input {
     margin-bottom: 10px;
   }
 }

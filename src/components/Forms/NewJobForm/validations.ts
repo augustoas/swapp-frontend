@@ -3,10 +3,6 @@ import {
   validateNumberBetweenRange,
 } from "@/utils/validations";
 
-interface Location {
-  [key: string]: unknown;
-}
-
 export const validateDescription = (description: string) => {
   const descriptionResult = validateMinimumCaracters(
     description,
@@ -31,7 +27,7 @@ export const validateDate = (dateType: number | null, date: string) => {
   return false;
 };
 
-export const validateLocation = (remote: boolean, location: Location) => {
+export const validateLocation = (remote: boolean, location: string) => {
   if (!location && !remote) {
     const errorMessage = ["Debe indicar dirección válida."];
     return errorMessage;
@@ -54,7 +50,7 @@ export const validateDetails = (details: string) => {
 export const validateBudget = (rawBudget: number) => {
   const budgetResult = validateNumberBetweenRange(
     rawBudget,
-    1,
+    2000,
     "999.999",
     "Monto"
   );

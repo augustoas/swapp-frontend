@@ -8,7 +8,7 @@
       :isHoverDisabled="!secondary"
       @click="toggleDatePicker"
     />
-    <div v-if="menu && show" class="date-picker-overlay">
+    <div v-if="menu && show" v-click-outside="hideDatePicker" class="date-picker-overlay">
       <v-date-picker
         v-model="date"
         @input="updateDate"
@@ -25,12 +25,16 @@
 import dayjs from "dayjs";
 
 import { Component, Vue, Prop, Watch } from "vue-property-decorator";
+import vClickOutside from 'v-click-outside';
 
 const BaseButton = () => import("@/components/Base/BaseButton.vue");
 
 @Component({
   components: {
     BaseButton,
+  },
+  directives: {
+    clickOutside: vClickOutside.directive
   },
 })
 export default class BaseDatePicker extends Vue {
@@ -63,6 +67,10 @@ export default class BaseDatePicker extends Vue {
   public updateDate(newValue) {
     this.$emit("input", newValue);
     this.date = newValue;
+    this.menu = false;
+  }
+
+  hideDatePicker() {
     this.menu = false;
   }
 
@@ -105,9 +113,5 @@ export default class BaseDatePicker extends Vue {
 
 .custom-date-picker {
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-}
-
-.vdp-datepicker__navigation button {
-  color: var(--base-dark-blue);
 }
 </style>

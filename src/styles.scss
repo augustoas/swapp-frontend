@@ -8,64 +8,24 @@
   --base-light-blue: #5dbbd1; // #88d1e2
 }
 
-body {
-  h1,
-  h2,
-  h3,
-  h4,
-  h5,
-  h6,
-  p {
-    font-family: 'Lato', sans-serif !important;
-  }
+@font-face {
+  font-family: 'Satoshi';
+  src: url('~@/assets/fonts/Satoshi/Satoshi-Regular.otf') format('opentype');
+  font-weight: normal; /* or 400 */
+  font-style: normal;
+}
 
-  h1 {
-    font-weight: bold;
-    font-size: 56px;
-    line-height: 60px;
-    letter-spacing: 0.4px;
-  }
-
-  h2 {
-    font-weight: bold;
-    font-size: 40px;
-    line-height: 46px;
-    letter-spacing: 0.2px;
-  }
-
-  h3 {
-    font-weight: 400;
-    font-size: 28px;
-    line-height: 34px;
-    letter-spacing: 0.2px;
-  }
-
-  h4 {
-    font-weight: bold;
-    font-size: 26px;
-    line-height: 34px;
-    letter-spacing: 0.2px;
-  }
-
-  h5 {
-    font-weight: bold;
-    font-size: 20px;
-    line-height: 26px;
-    letter-spacing: 0.2px;
-  }
-
-  h6 {
-    font-weight: 400;
-    font-size: 18px;
-    line-height: 24px;
-    letter-spacing: 0.1px;
-  }
+@font-face {
+  font-family: 'Satoshi';
+  src: url('~@/assets/fonts/Satoshi/Satoshi-Bold.otf') format('opentype');
+  font-weight: bold; /* or 700 */
+  font-style: normal;
 }
 
 #app {
   background-color: var(--background-color-main);
   text-align: center;
-  font-family: 'Lato', sans-serif;
+  font-family: 'Satoshi';
   color: #52575C;
 }
 

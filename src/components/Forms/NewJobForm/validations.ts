@@ -7,7 +7,6 @@ export const validateDescription = (description: string) => {
   const descriptionResult = validateMinimumCaracters(
     description,
     10,
-    "Descripción"
   );
 
   if (descriptionResult.errors.length > 0) {
@@ -37,7 +36,7 @@ export const validateLocation = (remote: boolean, location: string) => {
 };
 
 export const validateDetails = (details: string) => {
-  const detailsResult = validateMinimumCaracters(details, 25, "Detalles");
+  const detailsResult = validateMinimumCaracters(details, 25);
 
   if (detailsResult.errors.length > 0) {
     const errorMessage = detailsResult.errors;
@@ -50,7 +49,7 @@ export const validateDetails = (details: string) => {
 export const validateBudget = (rawBudget: number) => {
   const budgetResult = validateNumberBetweenRange(
     rawBudget,
-    2000,
+    "2.000",
     "999.999",
     "Monto"
   );

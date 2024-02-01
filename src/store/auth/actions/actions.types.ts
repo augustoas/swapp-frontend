@@ -10,9 +10,17 @@ export type SignUp = {
   lastname: string;
 };
 
+export type AuthToken = {
+  token: string;
+};
+
+export type JobInProgressPayload = unknown; // Replace 'unknown' with the actual type
+
 export type ActionsSignatures = {
   signIn: (data: SignIn) => Promise<boolean>;
   signUp: (data: SignUp) => Promise<boolean>;
   signOut: () => Promise<boolean>;
-  resetError: () => Promise<void>;
+  authenticate: (data: AuthToken) => Promise<boolean>;
+  jobInProgress: (data: JobInProgressPayload) => Promise<boolean>;
+  resetError: () => Promise<boolean>;
 };

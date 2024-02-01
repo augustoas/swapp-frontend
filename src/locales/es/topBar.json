@@ -1,10 +1,9 @@
 {
-  "postTask": "Crear",
-  "browseTasks": "Trabajos",
-  "howItWorks": "Cómo funciona",
+  "postTask": "Publicar oferta",
+  "browseTasks": "Ofertas",
   "myProfile": "Perfil",
   "logOut": "Cerrar sesión",
   "signUp": "Registrarse",
   "logIn": "Ingresar",
-  "becomeASwaper": "Conviértete en Swaper"
+  "becomeASwaper": "Trabaja en Swap"
 }

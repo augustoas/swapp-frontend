@@ -6,9 +6,10 @@
       :type="'date'"
       :secondary="secondary"
       :isHoverDisabled="!secondary"
+      :minWidth="'150px'"
       @click="toggleDatePicker"
     />
-    <div v-if="menu && show" v-click-outside="hideDatePicker" class="date-picker-overlay">
+    <v-dialog v-model="menu" transition="dialog-bottom-transition">
       <v-date-picker
         v-model="date"
         @input="updateDate"
@@ -17,7 +18,7 @@
         color="var(--base-light-blue)"
         class="custom-date-picker"
       ></v-date-picker>
-    </div>
+    </v-dialog>
   </div>
 </template>
 
@@ -66,6 +67,7 @@ export default class BaseDatePicker extends Vue {
 
   public updateDate(newValue) {
     this.$emit("input", newValue);
+    this.$emit("setDate", newValue);
     this.date = newValue;
     this.menu = false;
   }
@@ -91,24 +93,6 @@ export default class BaseDatePicker extends Vue {
 .date-picker__input {
   font-size: 14px;
   margin-right: 5px;
-}
-
-.date-picker-overlay {
-  position: absolute;
-  z-index: 100; /* Adjust z-index as needed */
-  /* Add more styles for positioning and size */
-  top: 43px;
-
-  &::before {
-    content: "";
-    position: absolute;
-    top: -10px; // Adjust as necessary to position the arrow correctly
-    left: 12%;
-    transform: translateX(-50%);
-    border-left: 10px solid transparent;
-    border-right: 10px solid transparent;
-    border-bottom: 10px solid white; // Use the same color as the modal background
-  }
 }
 
 .custom-date-picker {

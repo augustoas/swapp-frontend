@@ -11,21 +11,23 @@
         'rounded-button': isCircle,
         'square-button': isSquare,
         'disabled-button': isDisabled,
+        'date-picker-button': type === types.DATE,
       }"
       :style="buttonStyle"
       @click="handleClick"
     >
       {{ text }}
-      <BaseIcon
-        v-if="type === types.DATE"
-        class="date-picker-icon"
-        :icon="globalIcons.menuDown"
-        :width="15"
-        :height="15"
-        :viewBox="'0 0 20 20'"
-        :color="secondary && !isHovered ? 'var(--base-dark-blue)' : 'white'"
-        :fill="true"
-      />
+      <div class="date-picker-icon-container">
+        <BaseIcon
+          v-if="type === types.DATE"
+          :icon="globalIcons.menuDown"
+          :width="15"
+          :height="15"
+          :viewBox="'0 0 20 20'"
+          :color="secondary && !isHovered ? 'var(--base-dark-blue)' : 'white'"
+          :fill="true"
+        />
+      </div>
     </button>
   </div>
 </template>
@@ -130,6 +132,11 @@ export default class BaseButton extends Vue {
   font-weight: bold
 }
 
+.date-picker-button {
+  justify-content: left;
+  place-content: space-between !important;
+}
+
 .rounded-button {
   padding: 0; /* Padding set to 0 so width and height define the full size of the button */
   border: none;
@@ -148,10 +155,8 @@ export default class BaseButton extends Vue {
   border-radius: 4px !important;
 }
 
-.date-picker-icon {
+.date-picker-icon-container {
   position: relative;
-  width: 25px;
-  right: -5px;
 }
 
 .disabled-button {

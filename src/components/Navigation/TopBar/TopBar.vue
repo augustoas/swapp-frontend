@@ -73,7 +73,7 @@
         <BaseButton
           :text="topBarMessages.becomeASwaper"
           :secondary="true"
-          @click="navigateToPath('/newswaper')"
+          @click="navigateToPath('/newswaper', tabs.HOME)"
         />
       </div>
     </div>
@@ -120,9 +120,10 @@
 <script lang="ts">
 import { namespace } from "vuex-class";
 import { Tabs } from "@/utils/consts";
-import { EventBus } from "@/utils/eventBus";
 
-import { ActionsSignatures, State } from "@/store/auth";
+import { ActionsSignatures as AuthActions, State as AuthState } from "@/store/auth";
+import { ActionsSignatures as GlobalActions } from "@/store/global";
+
 import { Component, Mixins } from "vue-property-decorator";
 
 import { navigationIcons } from "@/assets/icons/icons";
@@ -133,6 +134,7 @@ import BaseIcon from "../../Base/BaseIcon.vue";
 import BaseButton from "@/components/Base/BaseButton.vue";
 
 const auth = namespace("auth");
+const global = namespace("global");
 
 @Component({
   components: {
@@ -141,11 +143,14 @@ const auth = namespace("auth");
   },
 })
 export default class TopBar extends Mixins(ResponsiveMixin) {
+  @global.Action
+  public setCurrentTab!: GlobalActions["setCurrentTab"];
+
   @auth.State("authenticated")
-  public authenticated!: State["authenticated"];
+  public authenticated!: AuthState["authenticated"];
 
   @auth.Action
-  public signOut!: ActionsSignatures["signOut"];
+  public signOut!: AuthActions["signOut"];
 
   public navigationIcons = navigationIcons;
   public tabs = Tabs;
@@ -159,7 +164,7 @@ export default class TopBar extends Mixins(ResponsiveMixin) {
   public navigateToPath(path, tab) {
     if (this.$route.path !== path) {
       this.$router.push(path);
-      EventBus.$emit("updateCurrentTab", tab);
+      this.setCurrentTab(tab);
     }
   }
 

@@ -1,7 +1,7 @@
 <template>
   <div :class="{ 'new-job-form': true, 'new-job-form--mobile': isMobile }">
     <div v-if="!isMobile" class="new-job-form__step-list">
-      <span class="new-job-form__step-list-title">Nuevo trabajo</span>
+      <span class="new-job-form__step-list-title">Nueva publicación</span>
       <span
         v-for="(step, index) in steps"
         :key="index"
@@ -13,12 +13,12 @@
     <BaseForm
       :subtitle="currentStep.subtitle"
       :maxWidth="'650px'"
-      :validationErrors="validationErrors"
       :showStepNumber="true"
       :steps="steps.length"
       :currentStep="currentStep.index + 1"
     >
       <template v-slot:content>
+        <!-- STEP 1 -->
         <div v-if="currentStep.index === 0" class="d-flex">
           <span class="new-job__input-tooltip">
             Elige un título para la tarea.
@@ -33,6 +33,9 @@
             v-model="description"
             placeholder="Ej: Necesito mover un sillón."
           />
+          <span v-if="validationErrors.description" class="base__error-message">
+            {{ validationErrors.description[0] }}
+          </span>
           <span class="new-job__input-tooltip">
             Detalla lo mejor posible la tarea.
           </span>
@@ -46,6 +49,9 @@
             v-model="details"
             placeholder="Mientras más detalles tu tarea, más fácil será encontrar un Swapper."
           />
+          <span v-if="validationErrors.details" class="base__error-message">
+            {{ validationErrors.details[0] }}
+          </span>
           <span class="new-job__input-tooltip">
             Agregar imágen (Opcional)
           </span>
@@ -61,42 +67,50 @@
             v-model="images"
           ></v-file-input>
         </div>
+        <!-- STEP 2 -->
         <div v-if="currentStep.index === 1" class="d-flex">
-          <div class="new-job-step-2__dates-container">
-            <span class="new-job__input-tooltip">
-              ¿Para cuándo lo necesitas? Selecciona flexible si no tienes clara la fecha y lo quieres coordinar más adelante.
-            </span>
-            <div class="new-job-step-2__dates-inputs-container">
-              <BaseDatePicker
-                class="new-job-step-2__date-input"
-                v-model="taskDate"
-                :text="'El día '"
-                :secondary="
-                  activeDatePicker !== datesOption.ON_DATE || taskDate === null
-                "
-                :show="activeDatePicker === datesOption.ON_DATE"
-                @click.native="setDate(datesOption.ON_DATE)"
-              />
-              <BaseDatePicker
-                class="new-job-step-2__date-input"
-                v-model="taskBeforeDate"
-                :text="'Antes del '"
-                :secondary="
-                  activeDatePicker !== datesOption.BEFORE_DATE ||
-                  taskBeforeDate === null
-                "
-                :show="activeDatePicker === datesOption.BEFORE_DATE"
-                @click.native="setDate(datesOption.BEFORE_DATE)"
-              />
-              <BaseButton
-                class="new-job-step-2__date-input"
-                :text="'Fecha flexible'"
-                :secondary="activeDatePicker !== datesOption.FLEXIBLE"
-                :isHoverDisabled="activeDatePicker === datesOption.FLEXIBLE"
-                @click.native="setDate(datesOption.FLEXIBLE)"
-              />
-            </div>
+          <span class="new-job__input-tooltip">
+            ¿Para cuándo lo necesitas?
+          </span>
+          <div class="new-job-step-2__dates-pickers-container">
+            <BaseDatePicker
+              class="new-job-step-2__date-input"
+              v-model="taskDate"
+              :text="'El día '"
+              :secondary="
+                activeDatePicker !== datesOption.ON_DATE || taskDate === null
+              "
+              :show="activeDatePicker === datesOption.ON_DATE"
+              @click.native="openDatePicker(datesOption.ON_DATE)"
+              @setDate="setDate(datesOption.ON_DATE)"
+            />
+            <BaseDatePicker
+              class="new-job-step-2__date-input"
+              v-model="taskBeforeDate"
+              :text="'Antes del '"
+              :secondary="
+                activeDatePicker !== datesOption.BEFORE_DATE ||
+                taskBeforeDate === null
+              "
+              :show="activeDatePicker === datesOption.BEFORE_DATE"
+              @click.native="openDatePicker(datesOption.BEFORE_DATE)"
+              @setDate="setDate(datesOption.BEFORE_DATE)"
+            />
           </div>
+          <div class="new-job-step-2__checkbox-container">
+            <v-checkbox
+              color="var(--base-dark-blue)"
+              :value="dateType === 3"
+              v-model="isFlexible"
+            >
+            </v-checkbox>
+            <span class="new-job__input-tooltip">
+              Prefiero coordinar la fecha con el Swapper más adelante
+            </span>
+          </div>
+          <span v-if="validationErrors.date" class="base__error-message">
+            {{ validationErrors.date[0] }}
+          </span>
           <span class="new-job__input-tooltip">
             Selecciona Remoto si se puede realizar el trabajo de manera remota.
           </span>
@@ -133,18 +147,24 @@
                 v-model="location"
                 placeholder="Calle y número"
               />
-              <BaseIcon
-                class="new-job__input-icon"
-                :fill="true"
-                :icon="globalIcons.mapIcon"
-                :width="25"
-                :height="25"
-                :viewBox="'0 0 25 25'"
-                :color="'var(--base-dark-blue)'"
-              />
+              <div class="new-job-step2__location-icon-container">
+                 <BaseIcon
+                  class="new-job-step2__location-input-icon"
+                  :fill="true"
+                  :icon="globalIcons.mapIcon"
+                  :width="25"
+                  :height="25"
+                  :viewBox="'0 0 25 25'"
+                  :color="'var(--base-dark-blue)'"
+                />
+              </div>
             </div>
           </div>
+          <span v-if="validationErrors.location" class="base__error-message">
+            {{ validationErrors.location[0] }}
+          </span>
         </div>
+        <!-- STEP 3 -->
         <div v-if="currentStep.index === 2" class="d-flex">
           <span class="new-job__input-tooltip">
             Podrás negociar el precio final más adelante.
@@ -171,6 +191,9 @@
               :color="'var(--base-dark-blue)'"
             />
           </div>
+          <span v-if="validationErrors.budget" class="base__error-message">
+            {{ validationErrors.budget[0] }}
+          </span>
         </div>
       </template>
       <template v-slot:inputs>
@@ -279,6 +302,7 @@ export default class NewJobForm extends Mixins(ResponsiveMixin) {
   public taskDate = null;
   public taskBeforeDate = null;
   public dateType = null;
+  public isFlexible = false;
   public location = "";
   public details = "";
   public rawBudget = null;
@@ -344,8 +368,11 @@ export default class NewJobForm extends Mixins(ResponsiveMixin) {
     this.currentStep = this.steps[currentIndex - 1];
   }
 
-  public setDate(option) {
+  public openDatePicker(option) {
     this.activeDatePicker = option;
+  }
+
+  public setDate(option) {
 
     if (option === this.datesOption.ON_DATE) {
       this.date = this.taskDate;
@@ -357,7 +384,13 @@ export default class NewJobForm extends Mixins(ResponsiveMixin) {
       this.dateType = 2;
     } else if (option === this.datesOption.FLEXIBLE) {
       this.date = null;
-      this.dateType = 3;
+      this.taskDate = null;
+      this.taskBeforeDate = null;
+        if (this.isFlexible) {
+          this.dateType = 3;
+        } else {
+          this.dateType = null;
+        }
     }
   }
 
@@ -387,7 +420,7 @@ export default class NewJobForm extends Mixins(ResponsiveMixin) {
     // if (!this.authenticated) {
     //   localStorage.setItem("jobInProgress", JSON.stringify(payload));
     //   this.jobInProgress(payload);
-    //   EventBus.$emit("updateCurrentTab", this.tabs.SIGN_IN);
+    //   this.setCurrentTab(this.tabs.SIGN_IN);
     //   this.$router.push("/signin");
     // } else {
     //   // CREATE JOB ACTION
@@ -403,6 +436,11 @@ export default class NewJobForm extends Mixins(ResponsiveMixin) {
   @Watch("remote")
   onRemote() {
     this.validationErrors = {};
+  }
+
+  @Watch("isFlexible")
+  onIsFlexibleChange() {
+    this.setDate(this.datesOption.FLEXIBLE);
   }
 }
 </script>
@@ -459,20 +497,13 @@ export default class NewJobForm extends Mixins(ResponsiveMixin) {
     float: left;
     font-weight: 500;
     color: black;
-    margin-top: 10px;
-    margin-bottom: 10px;
+    margin-bottom: 20px;
+    margin-top: 18px;
     text-align: start;
   }
 
   .new-job__input:focus {
     outline: 1px solid var(--base-dark-blue);
-  }
-
-  .new-job__input-icon {
-    position: relative;
-    top: -45px;
-    float: right;
-    margin-right: 10px;
   }
 
   .new-job__input-prepend-icon {
@@ -487,21 +518,19 @@ export default class NewJobForm extends Mixins(ResponsiveMixin) {
   .new-job-step-1__input-description {
     padding: 10px;
     border: 1px solid #ccc;
-    border-radius: 4px;
+    border-radius: 10px;
     font-size: 14px;
     width: 100%;
     height: 60px;
-    margin-bottom: 20px;
   }
 
   .new-job-step-1__input-details {
     padding: 10px;
     border: 1px solid #ccc;
-    border-radius: 4px;
+    border-radius: 10px;
     font-size: 14px;
     width: 100%;
     height: 100px;
-    margin-bottom: 20px;
   }
 
   .new-job-step-1__image-input {
@@ -512,14 +541,10 @@ export default class NewJobForm extends Mixins(ResponsiveMixin) {
 
   // STEP 2
 
-  .new-job-step-2__dates-container {
+  .new-job-step-2__dates-pickers-container {
     display: flex;
-    flex-direction: column;
-  }
-
-  .new-job-step-2__dates-inputs-container {
-    display: flex;
-    margin-bottom: 20px;
+    flex-direction: row;
+    align-self: center;
   }
 
   .new-job-step-2__date-input {
@@ -528,8 +553,8 @@ export default class NewJobForm extends Mixins(ResponsiveMixin) {
 
   .new-job-step-2__location-buttons-container {
     display: flex;
-    align-self: flex-start;
     margin-bottom: 10px;
+    font-size: 14px;
   }
 
   .new-job-step-2__location-button {
@@ -539,11 +564,27 @@ export default class NewJobForm extends Mixins(ResponsiveMixin) {
   .new-job-step-2__location-text-input {
     padding: 10px;
     border: 1px solid #ccc;
-    border-radius: 4px;
+    border-radius: 10px;
     font-size: 14px;
     margin-right: 5px;
     width: 100%;
-    margin-bottom: 10px;
+    margin-bottom: 5px;
+  }
+
+  .new-job-step2__location-icon-container {
+    position: relative;
+  } 
+
+  .new-job-step2__location-input-icon {
+    position: absolute;
+    top: -40px;
+    right: 10px;
+  }
+
+  .new-job-step-2__checkbox-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
   }
 
   // STEP 3
@@ -564,10 +605,22 @@ export default class NewJobForm extends Mixins(ResponsiveMixin) {
   align-items: center;
   justify-content: space-between;
 
-  .new-job-step-2__dates-inputs-container {
-    flex-direction: column;
-    align-items: flex-start;
+  ::v-deep .base-form__body {
+    width: 95% !important;
   }
+
+  .new-job-step-2__dates-pickers-container {
+    place-content: center !important;
+  }
+
+  .new-job-step-2__location-buttons-container {
+    justify-content: center;    
+    width: 100%;
+  }
+
+  .new-job-step-2__location-button {
+    margin-right: 5px;
+  }  
 
   .new-job-step-2__date-input {
     margin-bottom: 10px;

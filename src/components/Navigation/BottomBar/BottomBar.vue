@@ -22,10 +22,9 @@
 
 <script lang="ts">
 import { namespace } from "vuex-class";
-import { EventBus } from "@/utils/eventBus";
 import { State } from "@/store/auth";
 
-import { Component, Mixins } from "vue-property-decorator";
+import { Component, Mixins, Watch } from "vue-property-decorator";
 import { navigationIcons, globalIcons } from "@/assets/icons/icons";
 import { BottomBarItem } from "@/types/bottomBar.types";
 
@@ -34,6 +33,7 @@ import ResponsiveMixin from "@/mixins/responsiveMixin";
 import BaseIcon from "../../Base/BaseIcon.vue";
 
 const auth = namespace("auth");
+const global = namespace("global");
 
 @Component({
   components: {
@@ -46,6 +46,9 @@ export default class BottomBar extends Mixins(ResponsiveMixin) {
 
   public selectedItem = 0;
 
+  @global.State("currentTab")
+  public currentTab!: any;
+
   @auth.State("authenticated")
   public authenticated!: State["authenticated"];
 
@@ -56,22 +59,22 @@ export default class BottomBar extends Mixins(ResponsiveMixin) {
     const commonItems: BottomBarItem[] = [
       {
         path: "/",
-        name: "Home",
+        name: "Inicio",
         icon: this.navigationIcons.homeIcon,
       },
       {
         path: "/jobs",
-        name: "Browse Jobs",
+        name: "Trabajos",
         icon: this.navigationIcons.magnifyIcon,
       },
       {
         path: "/post",
-        name: "Post a Job",
+        name: "Publicar",
         icon: this.navigationIcons.plusIcon,
       },
       {
         path: "/jobs",
-        name: "My Jobs",
+        name: "Mis Trabajos",
         icon: this.navigationIcons.listIcon,
       },
     ];
@@ -81,7 +84,7 @@ export default class BottomBar extends Mixins(ResponsiveMixin) {
         ...commonItems,
         {
           path: "/profile",
-          name: "Profile",
+          name: "Perfil",
           icon: this.navigationIcons.accountIcon,
         },
       ];
@@ -90,7 +93,7 @@ export default class BottomBar extends Mixins(ResponsiveMixin) {
         ...commonItems,
         {
           path: "/signin",
-          name: "Sign In",
+          name: "Iniciar Sesión",
           icon: this.navigationIcons.signInIcon,
         },
       ];
@@ -102,11 +105,6 @@ export default class BottomBar extends Mixins(ResponsiveMixin) {
     if (storedSelectedItem !== null) {
       this.selectedItem = parseInt(storedSelectedItem);
     }
-    EventBus.$on("updateCurrentTab", (tab) => {
-      // Handle the event and data
-      console.log("updateCurrentTab tab", tab);
-      this.selectItem(tab);
-    });
   }
 
   getFilled(index: number) {
@@ -116,6 +114,12 @@ export default class BottomBar extends Mixins(ResponsiveMixin) {
   selectItem(index: number) {
     this.selectedItem = index;
     localStorage.setItem("currentTab", this.selectedItem.toString());
+  }
+
+  @Watch("currentTab")
+  onTabChange() {
+    console.log('updating tab on bottom bar')
+    this.selectItem(this.currentTab);
   }
 }
 </script>

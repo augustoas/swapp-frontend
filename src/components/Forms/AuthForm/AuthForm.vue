@@ -21,35 +21,35 @@
           />
         </div>
         <div v-if="isSignUp" class="auth-form__input-group-names">
-          <label for="first-name" class="visually-hidden">First Name</label>
+          <label for="first-name" class="visually-hidden">Nombre</label>
           <input
             class="auth-form__input"
             :class="{ 'base__input-error': validationErrors.firstName }"
             type="text"
             id="first-name"
             v-model="firstName"
-            placeholder="First name"
+            placeholder="Nombre"
             aria-label="first-name-input"
           />
-          <label for="last-name" class="visually-hidden">Last Name</label>
+          <label for="last-name" class="visually-hidden">Apellido</label>
           <input
             class="auth-form__input"
             :class="{ 'base__input-error': validationErrors.lastName }"
             type="text"
             id="last-name"
             v-model="lastName"
-            placeholder="Last name"
+            placeholder="Apellido"
             aria-label="last-name-input"
           />
         </div>
         <div class="auth-form__input-group auth-form__input-group--password">
-          <label for="password" class="visually-hidden">Password</label>
+          <label for="password" class="visually-hidden">Contraseña</label>
           <input
             class="auth-form__input"
             :class="{ 'base__input-error': validationErrors.password }"
             id="password"
             v-model="password"
-            placeholder="Password"
+            placeholder="Contraseña"
             :type="showPassword ? 'text' : 'password'"
             aria-label="password-input"
           />
@@ -75,7 +75,7 @@
           class="auth-form__input-group auth-form__input-group--password"
         >
           <label for="confirm-password" class="visually-hidden">
-            Confirm Password
+            Confirmar contraseña
           </label>
           <input
             class="auth-form__input"
@@ -84,7 +84,7 @@
             }"
             id="confirm-password"
             v-model="confirmPassword"
-            placeholder="Confirm password"
+            placeholder="Confirmar contraseña"
             type="password"
             aria-label="confirm-password-input"
           />
@@ -96,12 +96,12 @@
           {{ error.message }}.
         </div>
         <div class="auth-form__forgot-password" v-if="!isSignUp">
-          <a class="auth-form__link-to" href="#">Forgot password?</a>
+          <a class="auth-form__link-to" href="#">¿Olvidó su contraseña?</a>
         </div>
         <BaseButton
           v-if="!isLoading"
           class="auth-form__button"
-          :text="'Continue'"
+          :text="'Continuar'"
           :isSquare="true"
           :isHoverDisabled="true"
           @click="isSignUp ? onSignUp() : onSignIn()"
@@ -123,8 +123,8 @@
           </a>
         </p>
         <div class="auth-form__alternative-logins">
-          <button @click="signInWith('Google')">Login with Google</button>
-          <button @click="signInWith('Facebook')">Login with Facebook</button>
+          <button @click="signInWith('Google')">Ingresar con Google</button>
+          <button @click="signInWith('Facebook')">Ingresar con Facebook</button>
         </div>
       </template>
     </BaseForm>
@@ -150,7 +150,6 @@
 <script lang="ts">
 import { namespace } from "vuex-class";
 import { Tabs } from "@/utils/consts";
-import { EventBus } from "@/utils/eventBus";
 import { ActionsSignatures, State } from "@/store/auth";
 
 import { globalIcons } from "@/assets/icons/icons";
@@ -169,6 +168,7 @@ const BaseButton = () => import("@/components/Base/BaseButton.vue");
 const BaseModal = () => import("@/components/Base/BaseModal.vue");
 
 const auth = namespace("auth");
+const global = namespace("global");
 
 @Component({
   components: {
@@ -192,14 +192,14 @@ export default class AuthForm extends Vue {
     SignIn: {
       title: "Iniciar Sesión",
       subtitle: "Te damos la bienvenida a Swap",
-      questionText: "Don't have an account?",
-      textButton: "Sign up",
+      questionText: "¿No tienes una cuenta?",
+      textButton: "Regístrate",
     },
     SignUp: {
       title: "Registrarse",
       subtitle: "Te damos la bienvenida a Swap",
-      questionText: "Already have an account?",
-      textButton: "Sign in",
+      questionText: "¿Ya tienes una cuenta?",
+      textButton: "Inicia sesión",
     },
   };
 
@@ -209,6 +209,12 @@ export default class AuthForm extends Vue {
   public firstName = "";
   public lastName = "";
   public showPassword = false;
+
+  @global.State("currentTab")
+  public currentTab!: any;
+
+  @global.Action
+  public setCurrentTab!: any;
 
   @auth.State("error")
   public error!: State["error"];
@@ -299,13 +305,11 @@ export default class AuthForm extends Vue {
     this.isLoading = false;
 
     if (success && this.hasJobInProgress) {
-      console.log("show modal");
       this.showJobInProgressModal = true;
     }
 
     if (success && !this.hasJobInProgress) {
-      console.log("Normal signin ...");
-      EventBus.$emit("updateCurrentTab", this.tabs.HOME);
+      this.setCurrentTab(this.tabs.HOME);
       this.$router.push({ name: "home" });
     }
   }
@@ -338,14 +342,14 @@ export default class AuthForm extends Vue {
 
   public onCreateJob() {
     console.log("create job in progress... redirect jobs"); // CREATE JOB ACTION
-    EventBus.$emit("updateCurrentTab", this.tabs.JOBS);
+    this.setCurrentTab(this.tabs.JOBS);
     this.$router.push({ name: "jobs" });
   }
 
   public onCancel() {
     console.log("delete job in progress.... normal signin");
     localStorage.removeItem("jobInProgress");
-    EventBus.$emit("updateCurrentTab", this.tabs.HOME);
+    this.setCurrentTab(this.tabs.HOME);
     this.$router.push({ name: "home" });
   }
 

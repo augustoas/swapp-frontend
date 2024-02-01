@@ -74,7 +74,6 @@ export function validateConfirmPassword(
 export function validateMinimumCaracters(
   input: string,
   number: number,
-  key?: string
 ): {
   valid: boolean;
   errors: string[];
@@ -82,7 +81,7 @@ export function validateMinimumCaracters(
   const errors: string[] = [];
 
   if (input.length < number) {
-    errors.push(`${key}: Debe tener al menos ${number} caracteres.`);
+    errors.push(`Debe tener al menos ${number} caracteres.`);
   }
 
   return {

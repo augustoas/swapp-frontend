@@ -4,7 +4,7 @@ import VueI18n from "vue-i18n";
 Vue.use(VueI18n);
 
 const supportedLocales = ["en", "es"]; // Your supported locales
-const defaultLocale = "en"; // Your default locale
+const defaultLocale = "es"; // Your default locale
 
 function getSupportedLocale(locale) {
   const languageCode = locale.split("-")[0];
@@ -20,7 +20,7 @@ export function updateLangAttribute(lang) {
 }
 
 // export const userLocale = getSupportedLocale(navigator.language);
-export const userLocale = "en";
+export const userLocale = "es";
 
 export const i18n = new VueI18n({
   locale: userLocale,

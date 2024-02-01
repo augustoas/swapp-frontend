@@ -14,17 +14,6 @@
     <div class="base-form__body">
       <slot name="content"></slot>
     </div>
-    <div class="base-form__errors-container">
-      <div v-for="(errorList, key) in validationErrors" :key="key">
-        <div
-          v-for="(error, index) in errorList"
-          :key="index"
-          class="base__error-message"
-        >
-          {{ error }}
-        </div>
-      </div>
-    </div>
     <div class="base-form__inputs">
       <slot name="inputs"></slot>
     </div>
@@ -43,16 +32,6 @@ export default class BaseForm extends Mixins(ResponsiveMixin) {
   @Prop({ default: false }) readonly showStepNumber!: boolean;
   @Prop() readonly currentStep!: number;
   @Prop() readonly steps!: number;
-  @Prop() readonly validationErrors!: string;
-
-  created() {
-    console.log("BaseForm Props:", this.title, this.subtitle);
-  }
-
-  @Watch("validationErrors")
-  onComponentChange() {
-    console.log("validation Errors changed");
-  }
 }
 </script>
 
@@ -113,13 +92,8 @@ export default class BaseForm extends Mixins(ResponsiveMixin) {
 }
 
 .base-form__inputs {
-  margin-top: 80px;
+  margin-top: 20px;
   display: flex;
-}
-
-.base-form__errors-container {
-  width: 77%;
-  margin-top: 10px;
 }
 
 .base-form__step-number {
